@@ -1,12 +1,12 @@
-# Microservicio encargado de generar reportes como PDF y Excel
+# Microservicio encargado de generar documentos como PDF y Excel
 
 ## ¿Qué es esto?
 
-Este microservicio que se encarga de generar reportes en formato PDF y Excel a partir de datos obtenidos por un API REST.
+Este microservicio que se encarga de generar documentos en formato PDF y Excel a partir de datos obtenidos por un API REST.
 
 ## ¿Cómo funciona?
 
-El servicio se encarga de recibir los datos de la API REST y generar el reporte en formato PDF y Excel. El proceso de generación del reporte se realiza utilizando librerías como puppeteer y excel4node.
+El servicio se encarga de recibir los datos de la API REST y generar documentos en formato PDF y Excel. El proceso de generación de los documentos se realiza utilizando librerías como puppeteer y exceljs.
 
 ## ¿Cómo se integra?
 
@@ -22,7 +22,7 @@ El proceso de despliegue se realiza utilizando herramientas como Docker Compose 
 
 - [Pupeteer](https://pptr.dev/) Es una librería de Node.js que permite automatizar el proceso de navegación en el navegador web.
 
-- [Excel4Node](https://github.com/advisr-io/excel4node) Es una librería de Node.js que permite generar archivos de Excel desde datos en formato JSON.
+- [ExcelJS](https://github.com/exceljs/exceljs) Es una librería de Node.js que permite generar archivos de Excel desde datos en formato JSON.
 
 - [Docker](https://www.docker.com/) Es una plataforma de contenedores que permite ejecutar aplicaciones en contenedores.
 
@@ -40,7 +40,7 @@ El proceso de despliegue se realiza utilizando herramientas como Docker Compose 
 
 Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
 
-1.  Clona el proyecto o agrague el ssh al repositorio para contribuir en nuevos cambios [Git Hub - Generador de Resportes](https://github.com/luissince/syssoft-integra-reports)
+1.  Clona el proyecto o agrague el ssh al repositorio para contribuir en nuevos cambios [Git Hub - Generador de Resportes](https://github.com/luissince/syssoft-integra-documents)
 
     1. Agregue por ssh para la integración
 
@@ -65,13 +65,13 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
         Crea una carpeta.
 
         ```bash
-        mkdir syssoft-integra-reports
+        mkdir syssoft-integra-documents
         ```
 
         Moverse a la carpeta.
 
         ```bash
-        cd syssoft-integra-reports
+        cd syssoft-integra-documents
         ```
 
         Comando para inicia git.
@@ -83,7 +83,7 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
         Comando que agrega la referencia de la rama.
 
         ```bash
-        git remote add origin git@github.com:luissince/syssoft-integra-reports.git
+        git remote add origin git@github.com:luissince/syssoft-integra-documents.git
         ```
 
         Comando que descarga los archivos al working directory.
@@ -103,7 +103,7 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
         Al clonar un proyecto no necesitas crear ninguna carpeta.
 
         ```bash
-        git clone https://github.com/luissince/syssoft-integra-reports.git
+        git clone https://github.com/luissince/syssoft-integra-documents.git
         ```
 
 2. Instale las dependencias
