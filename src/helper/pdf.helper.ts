@@ -1,18 +1,40 @@
-import puppeteer from 'puppeteer';
 import { readFile } from 'fs/promises';
 import * as path from 'path';
 import * as ejs from 'ejs';
 import { Response } from 'express';
+import { chromium, Browser, BrowserContext, Page } from 'playwright';
 
-const measureHeight = async (htmlContent: string, width: number) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.setViewport({ width: width, height: 10 });
-  await page.setContent(htmlContent);
-  const height = await page.evaluate(() => document.body.scrollHeight);
-  await browser.close();
-  return height;
-};
+async function measureHeight(
+  htmlContent: string,
+  width: number,
+): Promise<number> {
+  let browser: Browser | null = null;
+  let context: BrowserContext | null = null;
+  let page: Page | null = null;
+
+  try {
+    browser = await chromium.launch({ headless: true });
+    context = await browser.newContext({
+      viewport: { width: width, height: 10 },
+      // screen: { width: 1920, height: 1080 },
+      deviceScaleFactor: 1,
+      isMobile: false,
+    });
+    page = await context.newPage();
+
+    await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => document.fonts.ready);
+
+    const bodyHandle = await page.$('body');
+    const boundingBox = await bodyHandle.boundingBox();
+
+    return Math.ceil(boundingBox.height);
+  } finally {
+    await page?.close();
+    await context?.close();
+    await browser?.close();
+  }
+}
 
 const pixelsToMillimeters = (px: number) => {
   return px / 3.77952756;
@@ -35,11 +57,13 @@ export const generatePDF = async (
 
     const htmlContent = ejs.render(templateContent, data);
 
-    if (width === 'A4') {
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-      await page.setContent(htmlContent);
+    if (width === 'A4') {
+      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.fonts.ready);
 
       const buffer = await page.pdf({
         // path: 'output.pdf',
@@ -56,18 +80,17 @@ export const generatePDF = async (
       );
 
       const heightPx = await measureHeight(htmlContent, widthPx);
-      const heightMm = pixelsToMillimeters(heightPx * 1.05).toFixed(2);
+      const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
 
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-
-      await page.setContent(htmlContent);
+      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.fonts.ready);
 
       const buffer = await page.pdf({
         // path: 'output.pdf',
         width: `${width}`,
         height: `${heightMm}mm`,
         printBackground: true,
+        margin: { top: 0, right: 0, bottom: 0, left: 0 },
       });
 
       await browser.close();

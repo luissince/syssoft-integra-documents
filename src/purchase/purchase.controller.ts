@@ -1,10 +1,11 @@
 import {
   Controller,
-  Get,
   HttpException,
   HttpStatus,
   Res,
   Req,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -15,25 +16,26 @@ import {
 } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
+import { InvoicesPurchaseDto } from './dto/invoices-purchase.dto';
 
 @ApiTags('Purchase')
 @Controller('purchase')
 export class PurchaseController {
   constructor(private readonly purchaseService: PurchaseService) {}
 
-  @Get('pdf/invoices/:size')
-  async pdfInvoices(@Req() req: Request, @Res() res: Response) {
+  @Post('pdf/invoices')
+  async pdfInvoices(@Res() res: Response, @Body() body: InvoicesPurchaseDto) {
     try {
-      const width = req.params.size || 'A4';
+      const width = body.size || 'A4';
       const fileName = 'COMPRA';
 
       let template = 'purchase/invoices/a4.ejs';
       if (width === 'A4') {
         template = 'purchase/invoices/a4.ejs';
       } else if (width === '80mm') {
-        template = 'purchase/invoices/80mm.ejs';
-      } else if (width === '50mm') {
-        template = 'purchase/invoices/58mm.ejs';
+        template = 'purchase/invoices/ticket.ejs';
+      } else if (width === '58mm') {
+        template = 'purchase/invoices/ticket.ejs';
       }
 
       const buffer: Uint8Array = await generatePDF(
@@ -51,14 +53,16 @@ export class PurchaseController {
     }
   }
 
-  @Get('pdf/report')
+  @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
+      console.log(req.body);
+
       const width = 'A4';
       const fileName = 'COMPRA';
 
       const buffer: Uint8Array = await generatePDF(
-        'purchase/reports/template.ejs',
+        'purchase/reports/a4.ejs',
         width,
         this.purchaseService.pdfReport(),
       );
@@ -72,7 +76,7 @@ export class PurchaseController {
     }
   }
 
-  @Get('excel')
+  @Post('excel')
   async excel(@Res() res: Response) {
     try {
       const fileName = 'COMPRA';
