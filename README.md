@@ -118,7 +118,8 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
     ```bash
     NODE_ENV=development
     PORT=3000
-    API_URL=http://localhost:3001
+    APP_URL=http://localhost:3001
+    CORS_ORIGIN=*
     ```
 
 4. Ejecutar el servico en modo desarrollo 
@@ -127,7 +128,17 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
     npm run dev   
     ```
 
-5. Ejecutar los tests unitarios
+5. Desplegar en un contenedor Docker en modo desarrollo
+
+    ```bash
+    # Desplegar el contenedor
+    docker-compose -f docker-compose.dev.yaml up --build -d
+
+    # Detener el contenedor
+    docker-compose -f docker-compose.dev.yaml down
+    ```
+
+6. Ejecutar los tests unitarios
     
     ```bash
     npm run test  
