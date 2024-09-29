@@ -6,8 +6,8 @@ export class PurchaseService {
 
   constructor() {
     this.data = {
-      style: `${process.env.API_URL}/public/css/style.css`,
-      icon: `${process.env.API_URL}/public/images/icon.png`,
+      style: `${process.env.APP_URL}/public/css/style.css`,
+      icon: `${process.env.APP_URL}/public/images/icon.png`,
       title: 'COMPRA',
     };
   }
