@@ -20,7 +20,9 @@ El proceso de despliegue se realiza utilizando herramientas como Docker Compose 
 
 - [Node](https://nodejs.org/en/) Es un entorno de ejecución de JavaScript que permite ejecutar código JavaScript en servidores, desde entornos de desarrollo hasta aplicaciones en producción.
 
-- [Pupeteer](https://pptr.dev/) Es una librería de Node.js que permite automatizar el proceso de navegación en el navegador web.
+- [Playwright](https://pptr.dev/) Es una librería de Node.js que permite transformar html a pdf.
+
+- [Ejs](https://ejs.co/) Es un motor de plantillas para Node js que permite generar HTML dinámico.
 
 - [ExcelJS](https://github.com/exceljs/exceljs) Es una librería de Node.js que permite generar archivos de Excel desde datos en formato JSON.
 
