@@ -23,7 +23,6 @@ async function measureHeight(
     page = await context.newPage();
 
     await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => document.fonts.ready);
 
     const bodyHandle = await page.$('body');
     const boundingBox = await bodyHandle.boundingBox();
@@ -47,28 +46,40 @@ const millimetersToPixels = (mm: number) => {
 export const generatePDF = async (
   template: string,
   width: string,
-  data: any,
+  data: ejs.Data,
 ): Promise<Uint8Array> => {
   try {
+    const templateHeader = await readFile(
+      path.join(__dirname, '..', '..', 'views', 'template', 'header.html'),
+      'utf8',
+    );
     const templateContent = await readFile(
       path.join(__dirname, '..', '..', 'views', template),
       'utf8',
     );
+    const templateFooter = await readFile(
+      path.join(__dirname, '..', '..', 'views', 'template', 'footer.html'),
+      'utf8',
+    );
 
-    const htmlContent = ejs.render(templateContent, data);
+    const htmlMainContent = ejs.render(templateContent, data);
 
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
 
     if (width === 'A4') {
-      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => document.fonts.ready);
 
       const buffer = await page.pdf({
         // path: 'output.pdf',
+        displayHeaderFooter: true,
+        headerTemplate: templateHeader,
+        footerTemplate: templateFooter,
         format: 'A4',
         printBackground: true,
+        margin: { top: '20px', bottom: '30px', left: 0, right: 0 },
       });
 
       await browser.close();
@@ -79,10 +90,10 @@ export const generatePDF = async (
         millimetersToPixels(Number(width.replace('mm', ''))),
       );
 
-      const heightPx = await measureHeight(htmlContent, widthPx);
+      const heightPx = await measureHeight(htmlMainContent, widthPx);
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
 
-      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => document.fonts.ready);
 
       const buffer = await page.pdf({
@@ -109,7 +120,7 @@ export const sendPdfResponse = (
 ) => {
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename=${fileName}.pdf`);
-  res.setHeader('Content-Length', buffer.length);
+  res.setHeader('Content-Length', buffer.byteLength);
   res.end(buffer);
 };
 

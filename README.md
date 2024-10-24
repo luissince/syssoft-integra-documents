@@ -111,6 +111,7 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
     ```bash
     nvm use
     npm install
+    npx playwright@1.47.2 install --with-deps chromium
     ```
 
 3. Configurar las variables de entorno  en el archivo .env

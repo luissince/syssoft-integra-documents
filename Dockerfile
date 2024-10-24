@@ -49,7 +49,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Instala Playwright y los navegadores necesarios
-RUN npx playwright install --with-deps chromium
+RUN npx playwright@1.47.2 install --with-deps chromium
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
