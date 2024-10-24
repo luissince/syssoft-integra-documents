@@ -24,17 +24,18 @@
       <div class="border-1 border-dashed"></div>
   
       <div class="text-center pt-5 pb-5">
-        <p class="font-weight-bold text-uppercase font-size-13"><%= data.purchase.comprobante.nombre %></p>
-        <p class="font-weight-bold font-size-13"><%= data.purchase.comprobante.serie %>-<%= data.purchase.comprobante.numeracion %></p>
+        <p class="font-weight-bold text-uppercase font-size-13"><%= data.sale.comprobante.nombre %></p>
+        <p class="font-weight-bold font-size-13"><%= data.sale.comprobante.serie %>-<%= data.sale.comprobante.numeracion %></p>
       </div>
   
       <div class="pt-5 pb-5">
-        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.purchase.fecha %> <%= data.purchase.hora %></p>
-        <p><span class="font-weight-bold">Proveedor:</span> <%= data.purchase.proveedor.informacion %></p>
-        <p><span class="font-weight-bold">RUC / D.N.I.:</span> <%= data.purchase.proveedor.documento %></p>
-        <p><span class="font-weight-bold">Dirección:</span> <%= data.purchase.proveedor.direccion %></p>
-        <% if (data.purchase.nota) { %>
-          <p><span class="font-weight-bold">Nota: </span> * <%= data.purchase.nota %></p>
+        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.sale.fecha %> <%= data.sale.hora %></p>
+        <p><span class="font-weight-bold">Cliente:</span> <%= data.sale.cliente.informacion %></p>
+        <p><span class="font-weight-bold">RUC / D.N.I.:</span> <%= data.sale.cliente.documento %></p>
+        <p><span class="font-weight-bold">Dirección:</span> <%= data.sale.cliente.direccion %></p>
+        <p><span class="font-weight-bold">Forma de Pago:</span> <%= data.sale.formaPago.nombre %></p>
+        <% if (data.sale.nota) { %>
+          <p><span class="font-weight-bold">Nota: </span> * <%= data.sale.nota %></p>
         <% } %>      
       </div>
   
@@ -46,17 +47,17 @@
               <tr>
                   <th width="5%" class="text-center"><p>Cant.</p></th>
                   <th width="30%" class="text-center"><p>Producto</p></th>
-                  <th width="10%" class="text-center"><p>Costo</p></th>
+                  <th width="10%" class="text-center"><p>Precio</p></th>
                   <th width="10%" class="text-right"><p>Importe</p></th>
               </tr>
           </thead>
           <tbody>
-            <% for (const item of data.purchase.compraDetalles) { %>
+            <% for (const item of data.sale.ventaDetalles) { %>
               <tr>
                   <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
-                  <td class="text-left"><p><%= item.producto.nombre %></p></td>
-                  <td class="text-center"><p><%= formatDecimal(item.costo) %></p></td>
-                  <td class="text-right"><p><%= formatDecimal(item.costo * item.cantidad) %></p></td>
+                  <td class="text-left"><p>G<%= item.producto.nombre %></p></td>
+                  <td class="text-center"><p><%= formatDecimal(item.precio) %></p></td>
+                  <td class="text-right"><p><%= formatDecimal(item.precio * item.cantidad) %></p></td>
               </tr>
               <% } %>
           </tbody>
@@ -70,19 +71,19 @@
           <tbody>
             <tr>
               <td><p>SUB TOTAL:</p></td>
-              <td class="text-right"><p><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+              <td class="text-right"><p><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
             </tr>
             <tr>
               <% for (const item of data.impuestos) { %>
                 <tr>
                   <td><p><%= item.nombre %>:</p></td>
-                  <td class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
+                  <td class="text-right"><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
                 </tr>
               <% } %>
             </tr>
             <tr>
               <th class="text-left"><p>TOTAL:</p></th>
-              <th class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+              <th class="text-right"><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
             </tr>
           </tbody>
         </table>
@@ -98,16 +99,27 @@
   
       <footer class="pt-5">    
         <div class="text-center mb-5">
-          <p>Vendedor: <%= data.purchase.usuario.nombres %>, <%= data.purchase.usuario.apellidos %></p>
+          <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %></p>
         </div>
   
+        <div class="text-center">
+          <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="120" />
+          <br />
+          <p>
+            Representación Impresa de la Guía de Remisión Electrónica
+          </p>
+          <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+            www.consultas-sunat.com
+          </a>
+        </div> 
+
         <div class="text-center mt-2">
             <img src="<%= data.icon %>" width="50px" class="m-0">
             <br />
             <a href="https://www.syssoftintegra.com/" class="font-family-pacifico">
               Emitido por: <span class="font-weight-bold">www.syssosftintegra.com</span>
             </a>
-        </div>
+        </div>        
   
         <% if (data.company.tipoEnvio === 0) { %>
           <p class="text-danger font-weight-bold text-center">           

@@ -27,21 +27,21 @@
     
         <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
           <h3>R.U.C.: <%= data.company.documento %></h3>
-          <p><%= data.purchase.comprobante.nombre %></p>
-          <p><%= data.purchase.comprobante.serie %>-<%= data.purchase.comprobante.numeracion %></p>
+          <p><%= data.order.comprobante.nombre %></p>
+          <p><%= data.order.comprobante.serie %>-<%= data.order.comprobante.numeracion %></p>
         </div>
       </div>
     
       <div class="flex justify-content-between pt-10 pb-10">
         <div class="w-50p">
-          <p><span class="font-weight-bold">R.U.C / D.N.I.:</span> <%= data.purchase.proveedor.documento %></p>
-          <p><span class="font-weight-bold">PROVEEDOR:</span> <%= data.purchase.proveedor.informacion %></p>
-          <p><span class="font-weight-bold">DIRECCION:</span> <%= data.purchase.proveedor.direccion %></p>
+          <p><span class="font-weight-bold">R.U.C / D.N.I.:</span> <%= data.order.proveedor.documento %></p>
+          <p><span class="font-weight-bold">PROVEEDOR:</span> <%= data.order.proveedor.informacion %></p>
+          <p><span class="font-weight-bold">DIRECCION:</span> <%= data.order.proveedor.direccion %></p>
         </div>
     
         <div class="w-50p">
-            <p><span class="font-weight-bold">FECHA EMISION:</span> <%= data.purchase.fecha %> <%= data.purchase.hora %></p>
-            <p><span class="font-weight-bold">MONEDA:</span> <%= data.purchase.moneda.nombre %>  - <%= data.purchase.moneda.codiso %></p>
+            <p><span class="font-weight-bold">FECHA EMISION:</span> <%= data.order.fecha %> <%= data.order.hora %></p>
+            <p><span class="font-weight-bold">MONEDA:</span> <%= data.order.moneda.nombre %>  - <%= data.order.moneda.codiso %></p>
         </div>
       </div>
     
@@ -58,7 +58,7 @@
             </tr>
           </thead>
           <tbody>
-            <% for (const item of data.purchase.compraDetalles) { %>
+            <% for (const item of data.order.pedidoDetalles) { %>
             <tr>
               <td class="text-center"><p><%= item.id %></p></td>
               <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
@@ -89,29 +89,29 @@
             <tbody>
               <tr>
                 <td><p>SUB TOTAL:</p></td>
-                <td class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+                <td class="text-right"><p><%= data.order.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
               </tr>
               <tr>
                 <% for (const item of data.impuestos) { %>
                   <tr>
                     <td><p><%= item.nombre %>:</p></td>
-                    <td class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
+                    <td class="text-right"><p><%= data.order.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
                   </tr>
                 <% } %>
               </tr>
               <tr>
                 <th class="text-left"><p>TOTAL:</p></th>
-                <th class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+                <th class="text-right"><p><%= data.order.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     
-      <% if (data.purchase.nota) { %>
+      <% if (data.order.nota) { %>
         <div class="pt-10 pb-10">
           <h3 class="mb-5">NOTA:</h3>
-          <p>* <%= data.purchase.nota %></p>
+          <p>* <%= data.order.nota %></p>
         </div>
       <% } %>  
 

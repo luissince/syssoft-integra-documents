@@ -1,0 +1,134 @@
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="<%= style %>">
+  <title><%= title %></title>
+</head>
+<body>
+  <div class="flex justify-content-between pl-20 pr-20 pt-10 pb-10">   
+    <div>
+      <img  
+      src="<%= icon %>"
+      width="100" 
+      height="100"
+      />
+    </div>
+    
+    <div class="w-40p text-center">
+      <h3>INVERSIONES LEONARDO ENRIQUE
+        ARRIOLA TICLLA S.A.C.</h3>
+        <p>JIR PROLONGACION FRANCIA 1798 LA </p>
+        <p>LIMA - LIMA - LA VICTORIA</p>
+        <p>922317719 | 999111936</p>
+        <p>www.leatsac.com | leat_sac@leatsac.com</p>
+    </div>
+
+    <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
+      <h3>R.U.C: 20101010101</h3>
+      <p>COTIZACION</p>
+      <p>C002-0000081</p>
+    </div>
+  </div>
+
+  <div class="flex justify-content-between pl-20 pr-20 pt-10 pb-10">
+    <div class="w-50p">
+      <p><span class="font-weight-bold">R.U.C / D.N.I.:</span> 89823423423</p>
+      <p><span class="font-weight-bold">INFORMACION:</span> empresa de servios multripe sa</p>
+      <p><span class="font-weight-bold">DIRECCION:</span> av. las gatas del sabor con mas sabor</p>
+    </div>
+
+    <div class="w-50p">
+        <p><span class="font-weight-bold">FECHA EMISION:</span> 15/10/2021</p>
+        <p><span class="font-weight-bold">FORMA DE PAGO:</span> CONTADO</p>
+        <p><span class="font-weight-bold">MONEDA:</span> SOLES - PEN</p>
+    </div>
+  </div>
+
+  <div class="pl-20 pr-20 pt-10 pb-10">
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th width="5%"><p>Ítem</p></th>
+          <th width="10%"><p>Cantidad</p></th>
+          <th width="10%"><p>Unid/Med</p></th>
+          <th width="55%"><p>Descripción</p></th>
+          <th width="10%"><p>Precio</p></th>
+          <th width="10%"><p>Importe</p></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i = 0; i < 15; i++) { %>
+        <tr>
+          <td class="text-center"><p><%= i + 1 %></p></td>
+          <td class="text-center"><p>4.0</p></td>
+          <td class="text-center"><p>UNIDAD</p></td>
+          <td class="text-left">
+            <p>
+              PLU903
+              <br/>
+              ESPEJO TOYOTA COROLLA NACIONAL DERECHO
+            </p>
+          </td>
+          <td class="text-center"><p>8.0</p></td>
+          <td class="text-right"><p>16.00</p></td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-content-between align-items-center pl-20 pr-20 pt-10 pb-10">
+    <div class="w-50p">
+      <h3 class="mb-5">MONTO EN LETRAS</h3>
+      <p>SON: QUINIENTOS TREINTA Y UNO CON 00/100 SOLES</p>
+    </div>
+
+    <div class="w-30p">
+      <table class="table w-full">
+        <tbody>
+          <tr>
+            <td><p>SUB TOTAL:</p></td>
+            <td class="text-right"><p>S/450.00</p></td>
+          </tr>
+          <tr>
+            <td><p>IGV(18%):</p></td>
+            <td class="text-right"><p>S/81.00</p></td>
+          </tr>
+          <tr>
+            <th class="text-left"><p>TOTAL:</p></th>
+            <th class="text-right"><p>S/531.00</p></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pl-20 pr-20 pt-10 pb-10">
+    <h3 class="mb-5">NOTA:</h3>
+    <p>* El monto de cada línea de la factura se calcula como el precio unitario más el IVA.</p>
+  </div>
+
+  <div class="pl-20 pr-20 pt-10 pb-10">
+    <h3 class="mb-5">Cuentas Bancarias</h3>
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th class="text-left"><p>BANCO</p></th>
+          <th class="text-left"><p>CUENTA</p></th>
+          <th class="text-left"><p>CCI</p></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>asd asdwww</p></td>
+          <td><p>asd asds wwww</p></td>
+          <td><p>234 23423 2342343dss</p></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

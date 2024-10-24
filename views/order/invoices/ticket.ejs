@@ -24,17 +24,17 @@
       <div class="border-1 border-dashed"></div>
   
       <div class="text-center pt-5 pb-5">
-        <p class="font-weight-bold text-uppercase font-size-13"><%= data.purchase.comprobante.nombre %></p>
-        <p class="font-weight-bold font-size-13"><%= data.purchase.comprobante.serie %>-<%= data.purchase.comprobante.numeracion %></p>
+        <p class="font-weight-bold text-uppercase font-size-13"><%= data.order.comprobante.nombre %></p>
+        <p class="font-weight-bold font-size-13"><%= data.order.comprobante.serie %>-<%= data.order.comprobante.numeracion %></p>
       </div>
   
       <div class="pt-5 pb-5">
-        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.purchase.fecha %> <%= data.purchase.hora %></p>
-        <p><span class="font-weight-bold">Proveedor:</span> <%= data.purchase.proveedor.informacion %></p>
-        <p><span class="font-weight-bold">RUC / D.N.I.:</span> <%= data.purchase.proveedor.documento %></p>
-        <p><span class="font-weight-bold">Dirección:</span> <%= data.purchase.proveedor.direccion %></p>
-        <% if (data.purchase.nota) { %>
-          <p><span class="font-weight-bold">Nota: </span> * <%= data.purchase.nota %></p>
+        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.order.fecha %> <%= data.order.hora %></p>
+        <p><span class="font-weight-bold">Proveedor:</span> <%= data.order.proveedor.informacion %></p>
+        <p><span class="font-weight-bold">RUC / D.N.I.:</span> <%= data.order.proveedor.documento %></p>
+        <p><span class="font-weight-bold">Dirección:</span> <%= data.order.proveedor.direccion %></p>
+        <% if (data.order.nota) { %>
+          <p><span class="font-weight-bold">Nota: </span> * <%= data.order.nota %></p>
         <% } %>      
       </div>
   
@@ -51,7 +51,7 @@
               </tr>
           </thead>
           <tbody>
-            <% for (const item of data.purchase.compraDetalles) { %>
+            <% for (const item of data.order.pedidoDetalles) { %>
               <tr>
                   <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
                   <td class="text-left"><p><%= item.producto.nombre %></p></td>
@@ -70,19 +70,19 @@
           <tbody>
             <tr>
               <td><p>SUB TOTAL:</p></td>
-              <td class="text-right"><p><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+              <td class="text-right"><p><p><%= data.order.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
             </tr>
             <tr>
               <% for (const item of data.impuestos) { %>
                 <tr>
                   <td><p><%= item.nombre %>:</p></td>
-                  <td class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
+                  <td class="text-right"><p><%= data.order.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
                 </tr>
               <% } %>
             </tr>
             <tr>
               <th class="text-left"><p>TOTAL:</p></th>
-              <th class="text-right"><p><%= data.purchase.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+              <th class="text-right"><p><%= data.order.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
             </tr>
           </tbody>
         </table>
@@ -98,7 +98,7 @@
   
       <footer class="pt-5">    
         <div class="text-center mb-5">
-          <p>Vendedor: <%= data.purchase.usuario.nombres %>, <%= data.purchase.usuario.apellidos %></p>
+          <p>Vendedor: <%= data.order.usuario.nombres %>, <%= data.order.usuario.apellidos %></p>
         </div>
   
         <div class="text-center mt-2">

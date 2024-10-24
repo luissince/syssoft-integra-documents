@@ -1,0 +1,113 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="<%= style %>" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <div class="text-center pb-10">
+      <img width="100" src="<%= icon %>" />
+      <br />
+      <h2 class="font-weight-bold text-uppercase"> SYSSOFT S.A. </h2>
+      <p>R.U.C.: 33-12345678-9</p>
+      <p>av. las Américas, 123</p>
+      <p>lima - Perú</p>
+      <p>Telf.: 987654321</p>
+      <p>Cel.: 987654321</p>
+      <p><i class="flaticon-envelope mr-2"></i>Email: info@syssoft.es</p>
+    </div>
+
+    <div class="border-1 border-dashed"></div>
+
+    <div class="text-center pt-5 pb-5">
+      <p class="font-weight-bold text-uppercase font-size-13">FACTURA</p>
+      <p class="font-weight-bold font-size-13">F0001-000001</p>
+    </div>
+
+    <div class="pt-5 pb-5">
+      <p><span class="font-weight-bold">Fecha de Emisión: </span> 10/10/2020 10:10:10</p>
+      <p><span class="font-weight-bold">Nombre:</span> empresa del desarrollo humano s.a.</p>
+      <p><span class="font-weight-bold">RUC / D.N.I.:</span> 10001000100</p>
+      <p><span class="font-weight-bold">Dirección:</span> av. las Américas, 123</p>
+      <p><span class="font-weight-bold">Forma de pago: </span> CONTADO</p>
+      <p><span class="font-weight-bold">Nota: </span> * EL COMPROBANTE FUE ENVIADO POR EL EMPRESA DEL DESARROLLO HUMANO S.A.</p>
+    </div>
+
+    <div class="border-1 border-dashed"></div>
+
+    <div>
+      <table class="table">
+        <thead>
+            <tr>
+                <th width="5%" class="text-center"><p>Cant.</p></th>
+                <th width="30%" class="text-center"><p>Producto</p></th>
+                <th width="10%" class="text-center"><p>Precio</p></th>
+                <th width="10%" class="text-right"><p>Importe</p></th>
+            </tr>
+        </thead>
+        <tbody>
+          <% for(let i = 0; i < 12; i++) { %>
+            <tr>
+                <td class="text-center"><p><%= i + 1 %></p></td>
+                <td class="text-left"><p>Galleta salada de 80g con 3 huevos</p></td>
+                <td class="text-center"><p>1</p></td>
+                <td class="text-right"><p>1000.00</p></td>
+            </tr>
+            <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="border-1 border-dashed"></div>
+
+    <div class="flex justify-content-end">
+      <table class="table">
+        <tbody>
+          <tr>
+            <td><p>SUB TOTAL:</p></td>
+            <td class="text-right"><p>S/450.00</p></td>
+          </tr>
+          <tr>
+            <td><p>IGV(18%):</p></td>
+            <td class="text-right"><p>S/81.00</p></td>
+          </tr>
+          <tr>
+            <th class="text-left"><p>TOTAL:</p></th>
+            <th class="text-right"><p>S/531.00</p></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="border-1 border-dashed"></div>
+
+    <div class="pt-5 pb-5">
+      <p>Importe en Letras: CIEN SOLES PARA LAS LETRAS</p>
+    </div>
+
+    <div class="border-1 border-dashed"></div>
+
+    <footer class="pt-5 pb-5">    
+      <!-- <div class="text-center">
+        <img src="data:image/png;base64,<%= base64QR %>" alt="QR Code" width="120" />
+      </div> -->
+      <div class="text-center mb-5">
+        <p>Vendod: juna del solar</p>
+      </div>
+
+      <div class="text-center mt-2">
+          <img src="<%= icon %>" width="50px" class="m-0">
+          <br />
+          <a href="https://www.syssoftintegra.com/" class="font-family-pacifico">
+            Emitido por: <span class="font-weight-bold">www.syssosftintegra.com</span>
+          </a>
+      </div>
+
+      <p class="text-danger font-weight-bold text-center">           
+          Representación Impresa del pre comprobante. No tiene Validez!
+      </p>
+    </footer>
+  </body>
+</html>
