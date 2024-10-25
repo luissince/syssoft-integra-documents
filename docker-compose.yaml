@@ -13,9 +13,9 @@ services:
     # Conexión a la red llamada 'luis'
     networks:
       - luis
-    # Mapeo de puertos: Mapea el puerto 6000 del host al puerto 80 del contenedor
+    # Mapeo de puertos: Mapea el puerto 8000 del host al puerto 80 del contenedor
     ports:
-      - "8000:8000"
+      - "8000:80"
     # Nombre del contenedor
     container_name: sysintegra-documents
     # Configuración para reiniciar siempre el contenedor
