@@ -19,7 +19,25 @@ services:
       - luis
     # Mapeo de puertos: Mapea el puerto 6505 del host al puerto 80 del contenedor
     ports:
-      - 6505:8000
+      - 6505:80
+
+  documents-services-production:
+    # Configuración para construir la imagen del contenedor desde el contexto actual
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Nombre de la imagen de la imagen generada
+    image: sysintegra-documents-image
+    # Nombre del contenedor
+    container_name: sysintegra-documents
+    # Configuración para reiniciar siempre el contenedor
+    restart: always
+    # Configuración de redes
+    networks:
+      - luis
+    # Mapeo de puertos: Mapea el puerto 6506 del host al puerto 80 del contenedor
+    ports:
+      - 6506:80
 
 # Definición de redes
 networks:

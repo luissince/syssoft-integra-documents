@@ -66,7 +66,7 @@ COPY --from=build /app/views ./views
 COPY --from=build /app/.env ./.env
 
 # Expone el puerto en el que la aplicación NestJS escuchará
-EXPOSE 8000
+EXPOSE 80
 
 # Comando para ejecutar la aplicación en modo producción
 CMD ["node", "dist/main"]
