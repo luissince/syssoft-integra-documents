@@ -135,10 +135,10 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
 
     ```bash
     # Desplegar el contenedor
-    docker-compose -f docker-compose.dev.yaml up --build -d
+    docker-compose -f docker-compose.dev.yml up --build -d
 
     # Detener el contenedor
-    docker-compose -f docker-compose.dev.yaml down
+    docker-compose -f docker-compose.dev.yml down
     ```
 
 6. Ejecutar los tests unitarios

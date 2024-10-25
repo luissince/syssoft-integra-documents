@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Instala @nestjs/cli de forma global
+RUN npm install -g @nestjs/cli
+
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
@@ -21,7 +24,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala las dependencias de producción
-RUN npm install --only=production
+RUN npm ci
 
 # Copia el resto del código fuente de la aplicación
 COPY . .
