@@ -14,9 +14,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala @nestjs/cli de forma global
-RUN npm install -g @nestjs/cli
-
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
@@ -33,7 +30,7 @@ COPY . .
 RUN npm run build
 
 # Limpia las dependencias de desarrollo y caché de npm
-RUN npm prune --production && npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
 
 # Usa una imagen más ligera para la ejecución final
 FROM debian:bullseye-slim AS production
