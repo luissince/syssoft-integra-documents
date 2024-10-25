@@ -3,7 +3,25 @@ version: '3.8'
 
 # Definición de servicios
 services:
-  documents-services:
+  documents-services-testing:
+    # Configuración para construir la imagen del contenedor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Nombre de la imagen resultante
+    image: sysintegra-documents-image
+    # Conexión a la red llamada 'luis'
+    networks:
+      - luis
+    # Mapeo de puertos: Mapea el puerto 8001 del host al puerto 80 del contenedor
+    ports:
+      - "8001:80"
+    # Nombre del contenedor
+    container_name: sysintegra-documents
+    # Configuración para reiniciar siempre el contenedor
+    restart: always
+    
+  documents-services-production:
     # Configuración para construir la imagen del contenedor
     build:
       context: .
