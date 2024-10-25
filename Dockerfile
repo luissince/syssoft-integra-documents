@@ -63,6 +63,7 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
+COPY --from=build /app/.env ./.env
 
 # Expone el puerto en el que la aplicación NestJS escuchará
 EXPOSE 8000
