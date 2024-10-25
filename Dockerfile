@@ -30,7 +30,7 @@ COPY . .
 RUN npm run build
 
 # Limpia las dependencias de desarrollo y caché de npm
-RUN npm ci --only=production && npm cache clean --force
+RUN npm cache clean --force
 
 # Usa una imagen más ligera para la ejecución final
 FROM debian:bullseye-slim AS production
