@@ -66,13 +66,13 @@ export class SaleController {
       const width = body.size || 'A4';
       const fileName = 'CUENTAS POR COBRAR';
 
-      let template = 'purchase/invoices/a4.ejs';
+      let template = 'sale/account-receivable/a4.ejs';
       if (width === 'A4') {
-        template = 'purchase/invoices/a4.ejs';
+        template = 'sale/account-receivable/a4.ejs';
       } else if (width === '80mm') {
-        template = 'purchase/invoices/ticket.ejs';
+        template = 'sale/account-receivable/ticket.ejs';
       } else if (width === '58mm') {
-        template = 'purchase/invoices/ticket.ejs';
+        template = 'sale/account-receivable/ticket.ejs';
       }
 
       const buffer: Uint8Array = await generatePDF(
