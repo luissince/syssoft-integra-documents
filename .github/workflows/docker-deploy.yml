@@ -35,7 +35,7 @@ jobs:
           EOL
 
       - name: Creando y ejecutando contenedor
-        run: docker compose -f docker-compose.testing.yml up --build documents-services-testing -d
+        run: docker compose -f docker-compose.yml up --build documents-services-testing -d
 
   build-and-deploy-app-documentos-production:
     if: github.ref == 'refs/heads/master'
