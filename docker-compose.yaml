@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile
     # Nombre de la imagen resultante
-    image: sysintegra-documents-image
+    image: sysintegra-documents-image-testing
     # Conexión a la red llamada 'luis'
     networks:
       - luis
@@ -17,10 +17,10 @@ services:
     ports:
       - "8001:80"
     # Nombre del contenedor
-    container_name: sysintegra-documents
+    container_name: sysintegra-documents-testing
     # Configuración para reiniciar siempre el contenedor
     restart: always
-    
+
   documents-services-production:
     # Configuración para construir la imagen del contenedor
     build:
