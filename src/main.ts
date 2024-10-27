@@ -22,7 +22,6 @@ async function bootstrap() {
   swaggerConfig(app);
 
   // Iniciar la aplicación
-  console.log('Starting server on port', process.env.PORT);
   await app.listen(process.env.PORT);
 }
 

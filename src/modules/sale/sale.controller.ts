@@ -49,7 +49,6 @@ export class SaleController {
 
       sendPdfResponse(res, buffer, fileName);
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,
