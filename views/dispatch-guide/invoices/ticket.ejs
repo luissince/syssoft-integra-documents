@@ -31,6 +31,7 @@
       <div class="pt-5 pb-5">
         <p><span class="font-weight-bold">Fecha de Traslado: </span> <%= data.dispatchGuide.fecha %> <%= data.dispatchGuide.hora %></p>
         <p><span class="font-weight-bold">Doc. Relacionado:</span> <%= data.dispatchGuide.venta.comprobante.nombre %> <%= data.dispatchGuide.venta.comprobante.serie %>-<%= data.dispatchGuide.venta.comprobante.numeracion %></p>
+        <p><span class="font-weight-bold">RUC./DNI:</span> <%= data.dispatchGuide.venta.cliente.documento %></p>
         <p><span class="font-weight-bold">Destinatario:</span> <%= data.dispatchGuide.venta.cliente.informacion %></p>
 
         <p><span class="font-weight-bold">Dirección de Partida:</span> <%= data.dispatchGuide.direccionPartida %></p>
