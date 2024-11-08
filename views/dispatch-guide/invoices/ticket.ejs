@@ -12,7 +12,7 @@
         <img width="100" src="<%= data.company.rutaLogo ?? data.icon %>" class="mb-5" />
         <br />
         <h2 class="font-weight-bold text-uppercase"> <%= data.company.nombreEmpresa %> </h2>
-        <p>R.U.C.: <%= data.company.documento %></p>
+        <p>RUC: <%= data.company.documento %></p>
         <p><%= data.branch.direccion %></p>
         <p><%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %></p>
         <p>Telf.: <%= data.branch.telefono %></p>
@@ -31,7 +31,7 @@
       <div class="pt-5 pb-5">
         <p><span class="font-weight-bold">Fecha de Traslado: </span> <%= data.dispatchGuide.fecha %> <%= data.dispatchGuide.hora %></p>
         <p><span class="font-weight-bold">Doc. Relacionado:</span> <%= data.dispatchGuide.venta.comprobante.nombre %> <%= data.dispatchGuide.venta.comprobante.serie %>-<%= data.dispatchGuide.venta.comprobante.numeracion %></p>
-        <p><span class="font-weight-bold">RUC./DNI:</span> <%= data.dispatchGuide.venta.cliente.documento %></p>
+        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.dispatchGuide.venta.cliente.documento %></p>
         <p><span class="font-weight-bold">Destinatario:</span> <%= data.dispatchGuide.venta.cliente.informacion %></p>
 
         <p><span class="font-weight-bold">Dirección de Partida:</span> <%= data.dispatchGuide.direccionPartida %></p>
@@ -39,7 +39,7 @@
 
         <p><span class="font-weight-bold">Transportista</span></p>
         <p><span class="font-weight-bold">Apellidos y Nombres:</span> <%= data.dispatchGuide.conductor.informacion %></p>
-        <p><span class="font-weight-bold">Ruc/Dni:</span> <%= data.dispatchGuide.conductor.documento %></p>
+        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.dispatchGuide.conductor.documento %></p>
         <p><span class="font-weight-bold">Modalidad Traslado:</span> <%= data.dispatchGuide.modalidadTraslado.nombre %></p>
 
         <p><span class="font-weight-bold">Unidad de Transporte</span> </p>

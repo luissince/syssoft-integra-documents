@@ -12,7 +12,7 @@
         <img width="100" src="<%= data.company.rutaLogo ?? data.icon %>" class="mb-5" />
         <br />
         <h2 class="font-weight-bold text-uppercase"> <%= data.company.nombreEmpresa %> </h2>
-        <p>R.U.C.: <%= data.company.documento %></p>
+        <p>RUC: <%= data.company.documento %></p>
         <p><%= data.branch.direccion %></p>
         <p><%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %></p>
         <p>Telf.: <%= data.branch.telefono %></p>
@@ -31,7 +31,7 @@
       <div class="pt-5 pb-5">
         <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.sale.fecha %> <%= data.sale.hora %></p>
         <p><span class="font-weight-bold">Cliente:</span> <%= data.sale.cliente.informacion %></p>
-        <p><span class="font-weight-bold">RUC / D.N.I.:</span> <%= data.sale.cliente.documento %></p>
+        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.sale.cliente.documento %></p>
         <p><span class="font-weight-bold">Dirección:</span> <%= data.sale.cliente.direccion %></p>
         <p><span class="font-weight-bold">Forma de Pago:</span> <%= data.sale.formaPago.nombre %></p>
         <% if (data.sale.nota) { %>

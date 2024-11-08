@@ -26,7 +26,7 @@
         </div>
     
         <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
-          <h3>R.U.C.: <%= data.company.documento %></h3>
+          <h3>RUC: <%= data.company.documento %></h3>
           <p><%= data.dispatchGuide.comprobante.nombre %></p>
           <p><%= data.dispatchGuide.comprobante.serie %>-<%= data.dispatchGuide.comprobante.numeracion %></p>
         </div>
@@ -37,7 +37,7 @@
           <p class="mb-1"><span class="font-weight-bold">Fecha de Traslado: </span> <%= data.dispatchGuide.fecha %> <%= data.dispatchGuide.hora %></p>
           <p class="mb-1"><span class="font-weight-bold">Doc. Relacionado:</span> <%= data.dispatchGuide.venta.comprobante.nombre %> <%= data.dispatchGuide.venta.comprobante.serie %>-<%= data.dispatchGuide.venta.comprobante.numeracion %></p>
           <p><span class="font-weight-bold">Destinatario</span></p>
-          <p><span>RUC./DNI: </span> <%= data.dispatchGuide.venta.cliente.documento %></p>
+          <p><span>RUC / DNI: </span> <%= data.dispatchGuide.venta.cliente.documento %></p>
           <p class="mb-1"><span>informacion:</span> <%= data.dispatchGuide.venta.cliente.informacion %></p>
 
           <p class="mb-1"><span class="font-weight-bold">Dirección de Partida:</span> <%= data.dispatchGuide.direccionPartida %></p>
@@ -49,7 +49,7 @@
         <div class="w-50p pl-5">
           <p class="mb-1"><span class="font-weight-bold">Transportista</span></p>
           <p><span>Apellidos y Nombres:</span> <%= data.dispatchGuide.conductor.informacion %></p>
-          <p class="mb-1"><span>Ruc/Dni:</span> <%= data.dispatchGuide.conductor.documento %></p>
+          <p class="mb-1"><span>RUC / DNI:</span> <%= data.dispatchGuide.conductor.documento %></p>
           <p class="mb-1"><span class="font-weight-bold">Modalidad Traslado:</span> <%= data.dispatchGuide.modalidadTraslado.nombre %></p>
 
           <p><span class="font-weight-bold">Unidad de Transporte</span> </p>
@@ -89,11 +89,7 @@
 
       <div class="flex flex-row justify-content-start align-items-center">
           <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
-          
           <div>
-            <p>
-              Representación Impresa de la Guía de Remisión Electrónica
-            </p>
             <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
               www.consultas-sunat.com
             </a>

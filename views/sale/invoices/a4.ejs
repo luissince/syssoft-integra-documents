@@ -27,7 +27,7 @@
       </div>
   
       <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
-        <h3>R.U.C.: <%= data.company.documento %></h3>
+        <h3>RUC: <%= data.company.documento %></h3>
         <p><%= data.sale.comprobante.nombre %></p>
         <p><%= data.sale.comprobante.serie %>-<%= data.sale.comprobante.numeracion %></p>
       </div>
@@ -35,7 +35,7 @@
   
     <div class="flex justify-content-between pt-10 pb-10">
       <div class="w-50p">
-        <p><span class="font-weight-bold">R.U.C / D.N.I.:</span> <%= data.sale.cliente.documento %></p>
+        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.sale.cliente.documento %></p>
         <p><span class="font-weight-bold">CLIENTE:</span> <%= data.sale.cliente.informacion %></p>
         <p><span class="font-weight-bold">DIRECCION:</span> <%= data.sale.cliente.direccion %></p>
       </div>
@@ -141,23 +141,26 @@
       </div>
     <% } %>
 
-    <div class="flex flex-column justify-content-between align-items-center pt-10 pb-10">
-      <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %></p>
-      <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="120" />
-      <br />
-      <p>
-        Representación Impresa de la Guía de Remisión Electrónica
-      </p>
-      <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
-        www.consultas-sunat.com
-      </a>
-  </div>
+    <div class="flex flex-row justify-content-start align-items-center">
+      <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
 
-    <% if (data.company.tipoEnvio === 0) { %>
-      <p class="text-danger font-weight-bold text-center">           
-          Representación Impresa del pre comprobante. No tiene Validez!
-      </p>
-    <% } %>
+      <div>
+        <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+          www.consultas-sunat.com
+        </a>
+        <% if (data.company.tipoEnvio === 0) { %>
+          <p class="text-danger font-weight-bold text-center">           
+              Representación Impresa del pre comprobante. No tiene Validez!
+          </p>
+        <% } else { %>
+          <p class="text-danger text-center">
+            Representación Impresa de Documento Electrónico Generado!
+          </p>
+        <% } %>
+        <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %></p>
+  
+      </div>
+  </div>
   </main>
 </body>
 </html>
