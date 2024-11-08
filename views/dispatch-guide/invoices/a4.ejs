@@ -88,21 +88,25 @@
       </div>
 
       <div class="flex flex-row justify-content-start align-items-center">
+        <% if (data.sale.comprobante.facturado) { %>
           <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />  
+        <% } %> 
+
           <div>
-            <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
-              www.consultas-sunat.com
-            </a>
+            <% if (data.sale.comprobante.facturado) { %>
+              <p class="text-danger font-weight-bold text-center">           
+                  Representación Impresa de la guía de remisión Electrónica.
+              </p>
+              <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+                www.consultas-sunat.com
+              </a>
+            <% } %>
             <% if (data.company.tipoEnvio === 0) { %>
               <p class="text-danger font-weight-bold text-center">           
-                  Representación Impresa del pre comprobante. No tiene Validez!
-              </p>
-            <% } else { %>
-              <p class="text-danger text-center">
-                Representación Impresa de Documento Electrónico Generado!
+                  Documento no valido
               </p>
             <% } %>
-            <p><span class="font-weight-bold">Vendedor:</span> <%= data.dispatchGuide.usuario.nombres %>, <%= data.dispatchGuide.usuario.apellidos %></p>
+            <p>Vendedor: <%= data.dispatchGuide.usuario.nombres %>, <%= data.dispatchGuide.usuario.apellidos %></p>
           </div>
       </div>
     </main>
