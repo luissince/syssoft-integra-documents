@@ -88,12 +88,12 @@
       </div>
 
       <div class="flex flex-row justify-content-start align-items-center">
-        <% if (data.sale.comprobante.facturado) { %>
+        <% if (data.dispatchGuide.comprobante.facturado) { %>
           <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />  
         <% } %> 
 
           <div>
-            <% if (data.sale.comprobante.facturado) { %>
+            <% if (data.dispatchGuide.comprobante.facturado) { %>
               <p class="font-weight-bold text-center">           
                   Representación Impresa de la guía de remisión Electrónica.
               </p>
