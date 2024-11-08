@@ -105,9 +105,6 @@
         <div class="text-center">
           <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="120" />
           <br />
-          <p>
-            Representación Impresa de la Guía de Remisión Electrónica
-          </p>
           <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
             www.consultas-sunat.com
           </a>
@@ -120,10 +117,14 @@
               Emitido por: <span class="font-weight-bold">www.syssosftintegra.com</span>
             </a>
         </div>        
-  
+
         <% if (data.company.tipoEnvio === 0) { %>
           <p class="text-danger font-weight-bold text-center">           
-              Representación Impresa del pre comprobante. No tiene Validez!
+              Documento no valido
+          </p>
+        <% } else { %>
+          <p class="text-danger text-center">
+            Representación Impresa de Documento Electrónico Generado!
           </p>
         <% } %>
       </footer>
