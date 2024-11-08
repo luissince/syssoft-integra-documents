@@ -55,8 +55,6 @@
           <p><span class="font-weight-bold">Unidad de Transporte</span> </p>
           <p><span>Licencia de Conducir:</span> <%= data.dispatchGuide.conductor.licenciaConducir %></p>
           <p class="mb-1"><span>Número de Placa:</span> <%= data.dispatchGuide.vehiculo.numeroPlaca %></p>
-          <p class="mb-1"><span class="font-weight-bold">Vendedor:</span> <%= data.dispatchGuide.usuario.nombres %>, <%= data.dispatchGuide.usuario.apellidos %></p>
-          
         </div>
       </div>
 
@@ -89,8 +87,8 @@
         </table>
       </div>
 
-      <div class="flex flex-row justify-content-start align-items-center pt-10 pb-10">
-          <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="120" />
+      <div class="flex flex-row justify-content-start align-items-center">
+          <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
           
           <div>
             <p>
@@ -108,6 +106,7 @@
                 Representación Impresa de Documento Electrónico Generado!
               </p>
             <% } %>
+            <p><span class="font-weight-bold">Vendedor:</span> <%= data.dispatchGuide.usuario.nombres %>, <%= data.dispatchGuide.usuario.apellidos %></p>
           </div>
       </div>
     </main>

@@ -158,11 +158,11 @@ body {
 .table td {
     border-bottom: 1px solid #e2e2e2;
     border-top: 1px solid #fff;
-    font-size: 10px;
+    font-size: 9px;
 }
 
 .table td p {
-    margin: 5px 3px;
+    margin: 3px 3px;
 }
 
 .table tr:first-child td {
