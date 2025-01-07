@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    container_name: my-nestjs-app
+    container_name: service-documents-test
     build:
       context: .
       dockerfile: Dockerfile

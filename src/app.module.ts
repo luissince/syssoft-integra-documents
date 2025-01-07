@@ -13,11 +13,13 @@ import { OrderModule } from './modules/order/order.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { ProductModule } from './modules/product/product.module';
 import { PersonModule } from './modules/person/person.module';
+import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     PurchaseModule,
+    PurchaseOrderModule,
     SaleModule,
     DispatchGuideModule,
     CollectionModule,

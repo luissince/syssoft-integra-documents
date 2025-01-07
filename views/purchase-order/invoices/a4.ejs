@@ -1,0 +1,149 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="<%= data.style %>">
+    <title><%= data.title %></title>
+  </head>
+  <body>
+    <main class="pl-20 pr-20">
+      <div class="flex justify-content-between pb-10">   
+        <div>
+          <img  
+          src="<%= data.company.rutaLogo ?? data.icon %>"
+          width="100" 
+          height="100"
+          />
+        </div>
+        
+        <div class="w-40p text-center">
+          <h3><%= data.company.nombreEmpresa %></h3>
+            <p><%= data.branch.direccion %> </p>
+            <p><%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %></p>
+            <p><%= data.branch.telefono %> | <%= data.branch.celular %></p>
+            <p><%= data.branch.paginaWeb %> | <%= data.branch.email %>m</p>
+        </div>
+    
+        <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
+          <h3>RUC: <%= data.company.documento %></h3>
+          <p><%= data.purchaseOrder.comprobante.nombre %></p>
+          <p><%= data.purchaseOrder.comprobante.serie %>-<%= data.purchaseOrder.comprobante.numeracion %></p>
+        </div>
+      </div>
+    
+      <div class="flex justify-content-between pt-10 pb-10">
+        <div class="w-50p">
+          <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.purchaseOrder.proveedor.documento %></p>
+          <p><span class="font-weight-bold">PROVEEDOR:</span> <%= data.purchaseOrder.proveedor.informacion %></p>
+          <p><span class="font-weight-bold">DIRECCION:</span> <%= data.purchaseOrder.proveedor.direccion %></p>
+        </div>
+    
+        <div class="w-50p">
+            <p><span class="font-weight-bold">FECHA EMISION:</span> <%= data.purchaseOrder.fecha %> <%= data.purchaseOrder.hora %></p>
+            <p><span class="font-weight-bold">MONEDA:</span> <%= data.purchaseOrder.moneda.nombre %>  - <%= data.purchaseOrder.moneda.codiso %></p>
+        </div>
+      </div>
+    
+      <div class="pt-10 pb-10">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th width="5%"><p>Ítem</p></th>
+              <th width="10%"><p>Cantidad</p></th>
+              <th width="10%"><p>Unid/Med</p></th>
+              <th width="55%"><p>Descripción</p></th>
+              <th width="10%"><p>Costo</p></th>
+              <th width="10%"><p>Importe</p></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const item of data.purchaseOrder.ordenCompraDetalles) { %>
+            <tr>
+              <td class="text-center"><p><%= item.id %></p></td>
+              <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
+              <td class="text-center"><p><%= item.medida.nombre %></p></td>
+              <td class="text-left">
+                <p>
+                  <%= item.producto.codigo %>
+                  <br/>
+                  <%= item.producto.nombre %>
+                </p>
+              </td>
+              <td class="text-right"><p><%= formatDecimal(item.costo) %></p></td>
+              <td class="text-right"><p><%= formatDecimal(item.costo * item.cantidad) %></p></td>
+            </tr>
+          <% } %>
+          </tbody>
+        </table>
+      </div>
+    
+      <div class="flex justify-content-between align-items-center pt-10 pb-10">
+        <div class="w-50p">
+          <h3 class="mb-5">MONTO EN LETRAS</h3>
+          <p>SON: <%= data.importLetras %></p>
+        </div>
+    
+        <div class="w-30p">
+          <table class="table w-full">
+            <tbody>
+              <tr>
+                <td><p>SUB TOTAL:</p></td>
+                <td class="text-right"><p><%= data.purchaseOrder.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+              </tr>
+              <tr>
+                <% for (const item of data.impuestos) { %>
+                  <tr>
+                    <td><p><%= item.nombre %>:</p></td>
+                    <td class="text-right"><p><%= data.purchaseOrder.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
+                  </tr>
+                <% } %>
+              </tr>
+              <tr>
+                <th class="text-left"><p>TOTAL:</p></th>
+                <th class="text-right"><p><%= data.purchaseOrder.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <% if (data.purchaseOrder.nota) { %>
+        <div class="pt-10 pb-10">
+          <h3 class="mb-5">NOTA:</h3>
+          <p>* <%= data.purchaseOrder.nota %></p>
+        </div>
+      <% } %>  
+
+      <% if (data.banks.length > 0) { %>
+        <div class="pt-10 pb-10">
+          <h3 class="mb-5">Cuentas Bancarias</h3>
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th class="text-left"><p>BANCO</p></th>
+                <th class="text-left"><p>CUENTA</p></th>
+                <th class="text-left"><p>CCI</p></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (const item of data.banks) { %>
+                <tr>
+                  <td><p><%= item.nombre %></p></td>
+                  <td><p><%= item.numCuenta %></p></td>
+                  <td><p><%= item.cci %></p></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+
+      <% if (data.company.tipoEnvio === 0) { %>
+        <p class="text-danger font-weight-bold text-center">           
+            Documento no tiene validez. 
+        </p>
+      <% } %>
+    </main>
+  </body>
+</html>
