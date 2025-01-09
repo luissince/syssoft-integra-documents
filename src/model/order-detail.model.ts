@@ -8,7 +8,7 @@ class OrderDetail {
   private _idPedido: string;
   private _idProducto: string;
   private _idMedida: string;
-  private _costo: number;
+  private _precio: number;
   private _cantidad: number;
   private _idImpuesto: string;
   private _producto: Product;
@@ -55,12 +55,12 @@ class OrderDetail {
     this._idMedida = _idMedida;
   }
 
-  get costo(): number {
-    return this._costo;
+  get precio(): number {
+    return this._precio;
   }
 
-  set costo(_costo: number) {
-    this._costo = _costo;
+  set precio(_precio: number) {
+    this._precio = _precio;
   }
 
   get cantidad(): number {

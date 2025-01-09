@@ -24,7 +24,7 @@ export class OrderService {
 
   pdfInvoice(body: InvoicesOrderDto) {
     const subTotal = body.order.pedidoDetalles.reduce((accumulator, item) => {
-      const total = item.costo * item.cantidad;
+      const total = item.precio * item.cantidad;
       return accumulator + calculateTaxBruto(item.impuesto.porcentaje, total);
     }, 0);
 
@@ -37,7 +37,7 @@ export class OrderService {
         }[],
         item,
       ) => {
-        const total = item.cantidad * item.costo;
+        const total = item.cantidad * item.precio;
         const subTotal = calculateTaxBruto(item.impuesto.porcentaje, total);
         const monto = calculateTax(item.impuesto.porcentaje, subTotal);
 
@@ -62,7 +62,7 @@ export class OrderService {
     );
 
     const total = body.order.pedidoDetalles.reduce(
-      (accumulator, item) => accumulator + item.costo * item.cantidad,
+      (accumulator, item) => accumulator + item.precio * item.cantidad,
       0,
     );
 

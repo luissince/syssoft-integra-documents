@@ -46,7 +46,7 @@
               <tr>
                   <th width="5%" class="text-center"><p>Cant.</p></th>
                   <th width="30%" class="text-center"><p>Producto</p></th>
-                  <th width="10%" class="text-center"><p>Costo</p></th>
+                  <th width="10%" class="text-center"><p>Precio</p></th>
                   <th width="10%" class="text-right"><p>Importe</p></th>
               </tr>
           </thead>
@@ -55,8 +55,8 @@
               <tr>
                   <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
                   <td class="text-left"><p><%= item.producto.nombre %></p></td>
-                  <td class="text-center"><p><%= formatDecimal(item.costo) %></p></td>
-                  <td class="text-right"><p><%= formatDecimal(item.costo * item.cantidad) %></p></td>
+                  <td class="text-center"><p><%= formatDecimal(item.precio) %></p></td>
+                  <td class="text-right"><p><%= formatDecimal(item.precio * item.cantidad) %></p></td>
               </tr>
               <% } %>
           </tbody>

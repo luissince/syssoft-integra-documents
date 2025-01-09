@@ -53,7 +53,7 @@
               <th width="10%"><p>Cantidad</p></th>
               <th width="10%"><p>Unid/Med</p></th>
               <th width="55%"><p>Descripción</p></th>
-              <th width="10%"><p>Costo</p></th>
+              <th width="10%"><p>Precio</p></th>
               <th width="10%"><p>Importe</p></th>
             </tr>
           </thead>
@@ -70,8 +70,8 @@
                   <%= item.producto.nombre %>
                 </p>
               </td>
-              <td class="text-right"><p><%= formatDecimal(item.costo) %></p></td>
-              <td class="text-right"><p><%= formatDecimal(item.costo * item.cantidad) %></p></td>
+              <td class="text-right"><p><%= formatDecimal(item.pedido) %></p></td>
+              <td class="text-right"><p><%= formatDecimal(item.precio * item.cantidad) %></p></td>
             </tr>
           <% } %>
           </tbody>
