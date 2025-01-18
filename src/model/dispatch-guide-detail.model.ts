@@ -1,4 +1,4 @@
-import Product from './product.mode';
+import Product from './product.model';
 
 class DispatchGuideDetail {
   private _id: number;

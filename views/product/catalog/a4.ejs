@@ -1,0 +1,506 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="<%= style %>" />
+    <title><%= title %></title>
+    <style>
+      /* Estilos de la portada */
+      .cover {
+        height: 297mm;
+        width: 210mm;
+        position: relative;
+        padding: 20mm;
+        overflow: hidden;
+      }
+
+      .cover .decorative-element {
+        position: absolute;
+        width: 300mm;
+        height: 300mm;
+        background: linear-gradient(
+          45deg,
+          rgba(255, 0, 4, 0.1) 0%,
+          rgba(2, 2, 3, 0.1) 100%
+        );
+        transform: rotate(-45deg);
+        top: -100mm;
+        right: -100mm;
+      }
+
+      .dots-pattern {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+          circle,
+          rgb(255, 0, 4) 1px,
+          transparent 1px
+        );
+        background-size: 20px 20px;
+        opacity: 0.1;
+      }
+
+      .cover .circles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .cover .circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 0, 4, 0.1);
+        animation: expand 3s infinite ease-out;
+      }
+
+      .cover .circle:nth-child(1) {
+        width: 100px;
+        height: 100px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .cover .circle:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        bottom: 20%;
+        right: 10%;
+        animation-delay: 1s;
+        border-color: rgba(2, 2, 3, 0.1);
+      }
+
+      .cover .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .cover .shape {
+        position: absolute;
+        opacity: 0.1;
+        animation: float 8s infinite ease-in-out;
+      }
+
+      .cover .shape:nth-child(1) {
+        width: 50px;
+        height: 50px;
+        background: rgb(255, 0, 4);
+        top: 15%;
+        left: 15%;
+        transform: rotate(45deg);
+      }
+
+      .cover .shape:nth-child(2) {
+        width: 30px;
+        height: 30px;
+        background: #020203;
+        bottom: 20%;
+        right: 20%;
+        border-radius: 50%;
+      }
+
+      .cover .title {
+        font-size: 3.5rem;
+        color: #020203;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        position: relative;
+      }
+
+      .cover .title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, rgb(255, 0, 4), #020203);
+      }
+
+      .cover .subtitle {
+        font-size: 1.5rem;
+        color: #020203;
+        margin-top: 1.5rem;
+      }
+
+      .cover .footer {
+        position: absolute;
+        bottom: 10mm;
+        text-align: center;
+        z-index: 1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      /* Contenido del catálogo */
+      .catalog-content {
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        padding: 22mm 10mm 20mm 10mm; 
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 10mm;
+        background-color: #ffffff;
+        overflow: hidden;
+      }
+
+      .catalog-content .product-card {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ddd;
+        padding: 5mm;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        
+      }
+
+      .catalog-content .product-image {
+        width: 100%;
+        height: 60mm;
+        margin-bottom: 5mm;
+        overflow: hidden;
+      }
+
+      .catalog-content .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+
+      .catalog-content .product-code {
+        font-size: 11pt;
+        margin: 0.1mm 0;
+        color: #020203;
+      }
+
+      .catalog-content .product-title {
+        font-size: 14pt;
+        margin: 0mm 0mm 2mm 0mm;
+        color: #020203;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        line-height: 1.2em;
+        max-height: 3.6em;
+      }
+
+      .catalog-content .product-description {
+        font-size: 10pt;
+        color: #666;
+        margin-bottom: 2mm;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        line-height: 1.2em;
+        max-height: 3.6em;
+      }
+
+      .catalog-content .header,
+      .catalog-content .footer {
+        position: absolute;
+        left: 0mm;
+        right: 0mm;
+      }
+
+      .catalog-content .header {
+        top: 0mm;        
+        background-color: rgba(255, 0, 4, 0.1);
+      }
+
+      .catalog-content .header-content {
+        padding: 2mm 10mm;
+      }
+
+      .catalog-content .footer {
+        bottom: 0mm;
+        padding: 5mm 10mm;
+        background-color: rgba(255, 0, 4, 0.1);
+      } 
+
+      .catalog-content .logo {
+        height: 12mm;
+      }
+
+      .catalog-content .footer {
+        font-size: 9pt;
+      }
+
+      .catalog-content .page-number {
+        border-radius: 2mm;
+        font-weight: bold;
+      }
+
+      /*  */
+      .end-content {
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        padding: 22mm 10mm 20mm 10mm; 
+        background-color: #ffffff;
+        overflow: hidden;
+      }
+
+      .end-content  .header,
+      .end-content  .footer {
+        position: absolute;
+        left: 0mm;
+        right: 0mm;
+      }
+
+      .end-content  .header {
+        top: 0mm;        
+        background-color: rgba(255, 0, 4, 0.1);
+      }
+
+      .end-content  .header-content {
+        padding: 2mm 10mm;
+      }
+
+      .end-content  .footer {
+        bottom: 0mm;
+        padding: 5mm 10mm;
+        background-color: rgba(255, 0, 4, 0.1);
+      } 
+
+      .end-content  .logo {
+        height: 12mm;
+      }
+
+      .end-content  .footer {
+        font-size: 9pt;
+      }
+
+      .end-content  .title {
+        font-size: 18pt;
+        font-weight: bold;
+        color: #2c5282;
+        margin-bottom: 5mm;
+      }
+    
+      .end-content .subtitle {
+          font-size: 14pt;
+          margin-bottom: 10mm;
+      }
+
+      .end-content  .message {
+        text-align: center;
+        font-size: 12pt;
+        margin-bottom: 10mm;
+        line-height: 1.5;
+    }
+
+      .end-content  .page-number {
+        border-radius: 2mm;
+        font-weight: bold;
+      }
+
+    </style>
+  </head>
+  <body>
+    <!-- Portada -->
+    <div class="flex justify-content-center align-items-center flex-column cover">
+      <div class="decorative-element"></div>
+
+      <div class="dots-pattern"></div>
+
+      <div class="circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+
+      <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+      </div>
+
+      <div class="year-badge"></div>
+
+      <h1 class="title">Catálogo</h1>
+      <h2><%= year %></h2>
+      <p class="subtitle">Productos y Servicios</p>
+
+      <div class="footer">
+        <p><%= company.documento %></p>
+        <p><%= company.nombreEmpresa %></p>
+      </div>
+    </div>
+
+    <!-- Contenido del catálogo (nueva página) -->
+    <% const productsPerPage = 4; %>
+    <% for(let i = 0; i < products.length; i += productsPerPage) { %>
+        <div class="catalog-content">
+            <div class="dots-pattern"></div>
+
+            <div class="header">
+              <div class="header-content flex align-items-center justify-content-between">
+                  <div class="flex justify-content-center align-items-center">
+                      <!-- Logo de la empresa -->
+                      <img src="<%= company.rutaLogo ?? icon %>" alt="Logo de la empresa" class="logo" style="width: 40px; height: 40px;">
+          
+                      <!-- Texto con icono de derechos reservados -->
+                      <p class="ml-5">
+                          <!-- Icono de derechos reservados -->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path d="M12 8.5a3.5 3.5 0 1 1 0 7v0a3.5 3.5 0 1 1 0-7v0z"></path>
+                          </svg>
+                          Tu Empresa - Todos los derechos reservados
+                      </p>
+                  </div>
+          
+                  <!-- Texto del catálogo con icono -->
+                  <p>
+                      <!-- Icono de libro -->
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M2 6h18"></path>
+                          <path d="M2 18h18"></path>
+                          <path d="M2 6a10 10 0 0 1 10 10"></path>
+                          <path d="M12 6a10 10 0 0 1 10 10"></path>
+                      </svg>
+                      Cátalogo - © 2024
+                  </p>
+              </div>
+          </div>
+
+            <% const pageProducts = products.slice(i, i + productsPerPage); %>
+            <% pageProducts.forEach(product => { %>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="<%= product.imagen %>" alt="<%= product.name %>">
+                    </div>
+
+                    <h2 class="product-title">
+                      <p class="product-code"><%= product.codigo %></p>
+                      <p class="font-weight-bold"><%= product.nombre %></p>
+                    </h2>
+                    <p class="product-description"><%= product.descripcionCorta %></p>
+                    <!-- <div class="product-price"><%= product.price %></div> -->
+                </div>
+            <% }); %>
+
+            <div class="footer flex justify-content-between align-items-center">
+              <p>
+                  <!-- Icono de ubicación -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 6.4-9 13-9 13s-9-6.6-9-13a9 9 0 1 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <%= branch.ubigeo.departamento %> - <%= branch.ubigeo.provincia %> - <%= branch.ubigeo.distrito %>
+              </p>
+              <p>
+                  <!-- Icono de teléfono -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.88 19.88 0 0 1 3.1 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .61 2.54 2 2 0 0 1-.45 2.11L9.03 10.91a16 16 0 0 0 6.06 6.06l1.54-1.15a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.54.61A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                  <%= branch.telefono %> | <%= branch.celular %>
+              </p>
+              <p>
+                  <!-- Icono de enlace -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1"></path>
+                      <path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1"></path>
+                  </svg>
+                  <%= branch.paginaWeb %> | <%= branch.email %>
+              </p>
+              <p class="page-number">
+                  <!-- Icono de página -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M9 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="16 2 16 8 22 8"></polyline>
+                  </svg>
+                  Página <%= Math.floor(i / productsPerPage) + 1 %>
+              </p>
+          </div>
+          
+        </div>
+    <% } %>
+
+    <!--  -->
+    <div class="end-content flex flex-column justify-content-center align-items-center">
+      <div class="dots-pattern"></div>
+
+      <div class="header">
+        <div class="header-content flex align-items-center justify-content-between">
+            <div class="flex justify-content-center align-items-center">
+                <!-- Logo de la empresa -->
+                <img src="<%= company.rutaLogo ?? icon %>" alt="Logo de la empresa" class="logo" style="width: 40px; height: 40px;">
+    
+                <!-- Texto con icono de derechos reservados -->
+                <p class="ml-5">
+                    <!-- Icono de derechos reservados -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8.5a3.5 3.5 0 1 1 0 7v0a3.5 3.5 0 1 1 0-7v0z"></path>
+                    </svg>
+                    <%= company.nombreEmpresa %> - Todos los derechos reservados
+                </p>
+            </div>
+    
+            <!-- Texto del catálogo con icono -->
+            <p>
+                <!-- Icono de libro -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 6h18"></path>
+                    <path d="M2 18h18"></path>
+                    <path d="M2 6a10 10 0 0 1 10 10"></path>
+                    <path d="M12 6a10 10 0 0 1 10 10"></path>
+                </svg>
+                Cátalogo - © <%= year %>
+            </p>
+        </div>
+      </div>
+
+      <h1 class="title">Gracias por su preferencia</h1>
+      <p class="subtitle">Productos y Servicios de Calidad</p>
+      <p class="message">
+          Nos esforzamos cada día para brindarle los mejores productos y servicios.  
+          Si tiene alguna consulta o desea realizar un pedido, no dude en contactarnos.  
+          ¡Estamos aquí para ayudarlo!
+      </p>
+
+      <div class="footer flex justify-content-between align-items-center">
+        <p>
+            <!-- Icono de ubicación -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 6.4-9 13-9 13s-9-6.6-9-13a9 9 0 1 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <%= branch.ubigeo.departamento %> - <%= branch.ubigeo.provincia %> - <%= branch.ubigeo.distrito %>
+        </p>
+        <p>
+            <!-- Icono de teléfono -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.88 19.88 0 0 1 3.1 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .61 2.54 2 2 0 0 1-.45 2.11L9.03 10.91a16 16 0 0 0 6.06 6.06l1.54-1.15a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.54.61A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <%= branch.telefono %> | <%= branch.celular %>
+        </p>
+        <p>
+            <!-- Icono de enlace -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1"></path>
+                <path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1"></path>
+            </svg>
+            <%= branch.paginaWeb %> | <%= branch.email %> 
+        </p>
+    </div>
+    
+  </div>
+  </body>
+</html>

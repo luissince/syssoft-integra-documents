@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { getStyle, getIcon } from 'src/config/assets.config';
+import { ProductDto } from './dto/product.dto';
+import { currentDate } from 'src/helper/utils.helper';
 
 @Injectable()
 export class ProductService {
@@ -16,11 +18,19 @@ export class ProductService {
   pdfReport() {
     return {
       ...this.data,
-      title: 'RESPORTE DE PRODUCTOS',
     };
   }
 
   excel() {
     return this.data;
+  }
+
+  pdfCatalog(body: ProductDto) {
+    return {
+      ...this.data,
+      year: currentDate().split('-')[0],
+      ...body,
+      title: 'CATALOGO PRODUCTOS',
+    };
   }
 }

@@ -152,3 +152,23 @@ export function calculateTax(porcent: number, amount: number): number {
   const tax = porcent / 100.0;
   return amount * tax;
 }
+
+/**
+ * Obtiene la fecha actual en el formato 'YYYY-MM-DD'.
+ * @returns {string} Fecha actual en formato 'YYYY-MM-DD'.
+ */
+export function currentDate(): string {
+  const date = new Date();
+  return parseFormatDate(date);
+}
+
+function parseFormatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = padZeroes(date.getMonth() + 1);
+  const day = padZeroes(date.getDate());
+  return `${year}-${month}-${day}`;
+}
+
+function padZeroes(num: number): string | number {
+  return num > 9 ? num : '0' + num;
+}

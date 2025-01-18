@@ -47,6 +47,7 @@ export const generatePDF = async (
   template: string,
   width: string,
   data: ejs.Data,
+  isFooter: boolean = true,
 ): Promise<Uint8Array> => {
   try {
     const templateHeader = await readFile(
@@ -76,10 +77,10 @@ export const generatePDF = async (
         // path: 'output.pdf',
         displayHeaderFooter: true,
         headerTemplate: templateHeader,
-        footerTemplate: templateFooter,
+        footerTemplate: isFooter ? templateFooter : '',
         format: 'A4',
         printBackground: true,
-        margin: { top: '20px', bottom: '30px', left: 0, right: 0 },
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
       });
 
       await browser.close();

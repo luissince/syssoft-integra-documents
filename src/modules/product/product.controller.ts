@@ -5,6 +5,7 @@ import {
   Res,
   Req,
   Post,
+  Body,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import {
 } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
+import { ProductDto } from './dto/product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -75,6 +77,30 @@ export class ProductController {
 
       // Enviar el archivo
       sendExcelResponse(res, buffer, fileName);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error al generar el PDF',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('pdf/catalog')
+  async pdfCatalog(@Res() res: Response, @Body() body: ProductDto) {
+    try {
+      const width = 'A4';
+      const fileName = 'CATALOGO PRODUCTOS';
+
+      const data = this.productService.pdfCatalog(body);
+
+      const buffer: Uint8Array = await generatePDF(
+        'product/catalog/a4.ejs',
+        width,
+        data,
+        false,
+      );
+
+      sendPdfResponse(res, buffer, fileName);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

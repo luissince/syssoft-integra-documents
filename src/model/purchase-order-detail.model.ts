@@ -1,5 +1,5 @@
 import Measurement from './measurement.model';
-import Product from './product.mode';
+import Product from './product.model';
 import Tax from './tax.model';
 
 class PurchaseOrderDetail {
