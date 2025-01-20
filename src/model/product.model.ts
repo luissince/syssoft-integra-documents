@@ -1,4 +1,5 @@
 import Measurement from './measurement.model';
+import Price from './price.model';
 
 class Product {
   private _idProducto: string;
@@ -24,6 +25,7 @@ class Product {
   private _hupdate: string;
   private _idUsuario: string;
   private _medida: Measurement;
+  private _precios: Price[];
 
   get idProducto(): string {
     return this._idProducto;
@@ -207,6 +209,14 @@ class Product {
 
   set medida(_medida: Measurement) {
     this._medida = _medida;
+  }
+
+  get precios(): Price[] {
+    return this._precios;
+  }
+
+  set precios(_precios: Price[]) {
+    this._precios = _precios;
   }
 }
 

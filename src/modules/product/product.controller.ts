@@ -17,6 +17,7 @@ import {
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { ProductDto } from './dto/product.dto';
+import { formatDecimal } from 'src/helper/utils.helper';
 
 @ApiTags('Product')
 @Controller('product')
@@ -90,13 +91,17 @@ export class ProductController {
     try {
       const width = 'A4';
       const fileName = 'CATALOGO PRODUCTOS';
+      const template = 'product/catalog/a4.ejs';
 
       const data = this.productService.pdfCatalog(body);
 
       const buffer: Uint8Array = await generatePDF(
-        'product/catalog/a4.ejs',
+        template,
         width,
-        data,
+        {
+          ...data,
+          formatDecimal,
+        },
         false,
       );
 
