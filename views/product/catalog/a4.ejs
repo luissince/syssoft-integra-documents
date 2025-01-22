@@ -5,12 +5,26 @@
     <link rel="stylesheet" href="<%= style %>" />
     <title><%= title %></title>
     <style>
+      :root {
+        --page-width: 210mm;
+        --page-height: 297mm;
+        --content-padding: 20mm;
+      }
+
+      /* Clase base para todas las páginas */
+      .page {
+        width: var(--page-width);
+        height: var(--page-height);
+        overflow: hidden;
+        page-break-after: always;
+        position: relative;
+        background: white;
+      }
+
       /* Estilos de la portada */
       .cover {
-        height: 297mm;
-        width: 210mm;
         position: relative;
-        padding: 20mm;
+        padding: var(--content-padding);
         overflow: hidden;
       }
 
@@ -323,7 +337,7 @@
   </head>
   <body>
     <!-- Portada -->
-    <div class="flex justify-content-center align-items-center flex-column cover">
+    <div class="page flex justify-content-center align-items-center flex-column cover">
       <div class="decorative-element"></div>
 
       <div class="dots-pattern"></div>
@@ -353,7 +367,7 @@
     <!-- Contenido del catálogo (nueva página) -->
     <% const productsPerPage = 4; %>
     <% for(let i = 0; i < products.length; i += productsPerPage) { %>
-        <div class="catalog-content">
+        <div class="page catalog-content">
             <div class="dots-pattern"></div>
 
             <div class="header">
@@ -382,7 +396,7 @@
                           <path d="M2 6a10 10 0 0 1 10 10"></path>
                           <path d="M12 6a10 10 0 0 1 10 10"></path>
                       </svg>
-                      Cátalogo - © <%= year %><
+                      Cátalogo - © <%= year %>
                   </p>
               </div>
           </div>
@@ -441,7 +455,7 @@
     <% } %>
 
     <!--  -->
-    <div class="end-content flex flex-column justify-content-center align-items-center">
+    <div class="page end-content flex flex-column justify-content-center align-items-center">
       <div class="dots-pattern"></div>
 
       <div class="header">
@@ -507,8 +521,8 @@
             </svg>
             <%= branch.paginaWeb %> | <%= branch.email %> 
         </p>
-    </div>
+      </div>
     
-  </div>
+    </div>
   </body>
 </html>
