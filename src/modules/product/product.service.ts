@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { getStyle, getIcon } from 'src/config/assets.config';
 import { ProductDto } from './dto/product.dto';
 import { currentDate } from 'src/helper/utils.helper';
+import { CodBarDto } from './dto/codbar.dto';
 
 @Injectable()
 export class ProductService {
@@ -31,6 +32,14 @@ export class ProductService {
       year: currentDate().split('-')[0],
       ...body,
       title: 'CATALOGO PRODUCTOS',
+    };
+  }
+
+  pdfCodBar(body: CodBarDto) {
+    return {
+      ...this.data,
+      ...body,
+      title: 'LISTA DE CÓDIGO DE BARRAS PRODUCTOS',
     };
   }
 }

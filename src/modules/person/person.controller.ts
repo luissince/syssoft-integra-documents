@@ -15,6 +15,7 @@ import {
 } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
+import { SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Person')
 @Controller('person')
@@ -24,16 +25,17 @@ export class PersonController {
   @Post('pdf/customer/reports')
   async pdfCustomerReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'CLIENTE';
+      const width = SizePrint.A4;
+
+      const data = this.personService.pdfCustomerReport();
 
       const buffer: Uint8Array = await generatePDF(
         'person/customer/reports/a4.ejs',
         width,
-        this.personService.pdfCustomerReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -45,16 +47,17 @@ export class PersonController {
   @Post('pdf/supplier/reports')
   async pdfSupplierReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'PROVEEDORES';
+      const width = SizePrint.A4;
+
+      const data = this.personService.pdfSupplierReport();
 
       const buffer: Uint8Array = await generatePDF(
         'person/supplier/reports/a4.ejs',
         width,
-        this.personService.pdfSupplierReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

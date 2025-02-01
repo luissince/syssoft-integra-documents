@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesSaleDto } from './dto/invoices-sale.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Sale')
 @Controller('sale')
@@ -27,27 +28,28 @@ export class SaleController {
   @Post('pdf/invoices')
   async pdfInvoices(@Res() res: Response, @Body() body: InvoicesSaleDto) {
     try {
-      const width = body.size || 'A4';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'sale/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'sale/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'sale/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'sale/invoices/ticket.ejs';
       }
 
       const data = await this.saleService.pdfInvoice(body);
-
-      const fileName = data.title;
 
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -62,17 +64,21 @@ export class SaleController {
     @Body() body: InvoicesSaleDto,
   ) {
     try {
-      const width = body.size || 'A4';
-      const fileName = 'CUENTAS POR COBRAR';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'sale/account-receivable/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'sale/account-receivable/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'sale/account-receivable/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'sale/account-receivable/ticket.ejs';
       }
+
+      const data = this.saleService.pdfAccountReceivable();
 
       const buffer: Uint8Array = await generatePDF(
         template,
@@ -80,7 +86,7 @@ export class SaleController {
         this.saleService.pdfAccountReceivable(),
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -92,16 +98,17 @@ export class SaleController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'VENTA';
+      const width = SizePrint.A4;
+
+      const data = this.saleService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'sale/reports/a4.ejs',
         width,
-        this.saleService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

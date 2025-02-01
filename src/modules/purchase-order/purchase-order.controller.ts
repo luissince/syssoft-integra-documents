@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesPurchaseOrderDto } from './dto/invoices-purchase-order.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('PurchaseOrder')
 @Controller('purchase-order')
@@ -30,14 +31,17 @@ export class PurchaseOrderController {
     @Body() body: InvoicesPurchaseOrderDto,
   ) {
     try {
-      const width = body.size || 'A4';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'purchase-order/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'purchase-order/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'purchase-order/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'purchase-order/invoices/ticket.ejs';
       }
 
@@ -62,7 +66,7 @@ export class PurchaseOrderController {
   @Post('pdf/lists')
   async pdfList(@Res() res: Response, @Body() body: InvoicesPurchaseOrderDto) {
     try {
-      const width = 'A4';
+      const width = SizePrint.A4;
 
       const template = 'purchase-order/list/a4.ejs';
 
@@ -87,16 +91,17 @@ export class PurchaseOrderController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'ORDEN DE COMPRA';
+      const width = SizePrint.A4;
+
+      const data = this.purchaseOrderService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'purchase-order/reports/a4.ejs',
         width,
-        this.purchaseOrderService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

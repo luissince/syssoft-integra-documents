@@ -1,9 +1,5 @@
-enum Size {
-  'A4' = 'A4',
-  '80mm' = '80mm',
-  '58mm' = '58mm',
-}
+import { SizePaper } from 'src/common/enums/size.enum';
 
 export class InvoicesTransactionDto {
-  size: Size;
+  size: SizePaper;
 }

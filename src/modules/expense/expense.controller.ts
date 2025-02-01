@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesExpenseDto } from './dto/invoices-expense.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Expense')
 @Controller('expense')
@@ -27,27 +28,28 @@ export class ExpenseController {
   @Post('pdf/invoices')
   async pdfInvoices(@Res() res: Response, @Body() body: InvoicesExpenseDto) {
     try {
-      const width = body.size || 'A4';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'expense/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'expense/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'expense/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'expense/invoices/ticket.ejs';
       }
 
       const data = this.expenseService.pdfInvoice(body);
-
-      const fileName = data.title;
 
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -59,16 +61,17 @@ export class ExpenseController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'GASTO';
+      const width = SizePrint.A4;
+
+      const data = this.expenseService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'expense/reports/a4.ejs',
         width,
-        this.expenseService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

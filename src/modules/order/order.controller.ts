@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesOrderDto } from './dto/invoices-order.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Order')
 @Controller('order')
@@ -27,27 +28,28 @@ export class OrderController {
   @Post('pdf/invoices')
   async pdfInvoices(@Res() res: Response, @Body() body: InvoicesOrderDto) {
     try {
-      const width = body.size || 'A4';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'order/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'order/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'order/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'order/invoices/ticket.ejs';
       }
 
       const data = this.orderService.pdfInvoice(body);
-
-      const fileName = data.tile;
 
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -59,20 +61,18 @@ export class OrderController {
   @Post('pdf/lists')
   async pdfList(@Res() res: Response, @Body() body: InvoicesOrderDto) {
     try {
-      const width = 'A4';
+      const width = SizePrint.A4;
 
       const template = 'order/list/a4.ejs';
 
       const data = this.orderService.pdfList(body);
-
-      const fileName = data.title;
 
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -84,16 +84,17 @@ export class OrderController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'PEDIDO';
+      const width = SizePrint.A4;
+
+      const data = this.orderService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'order/reports/a4.ejs',
         width,
-        this.orderService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

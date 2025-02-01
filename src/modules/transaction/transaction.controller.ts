@@ -17,6 +17,7 @@ import {
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesTransactionDto } from './dto/invoices-transaction.dto';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Transaction')
 @Controller('transaction')
@@ -29,25 +30,25 @@ export class TransactionController {
     @Body() body: InvoicesTransactionDto,
   ) {
     try {
-      const width = body.size || 'A4';
-      const fileName = 'TRANSACCION';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'transaction/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'transaction/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'transaction/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'transaction/invoices/ticket.ejs';
       }
 
-      const buffer: Uint8Array = await generatePDF(
-        template,
-        width,
-        this.transactionService.pdfInvoices(),
-      );
+      const data = this.transactionService.pdfInvoices();
 
-      sendPdfResponse(res, buffer, fileName);
+      const buffer: Uint8Array = await generatePDF(template, width, data);
+
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -59,16 +60,17 @@ export class TransactionController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'COMPRA';
+      const width = SizePrint.A4;
+
+      const data = this.transactionService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'transaction/reports/a4.ejs',
         width,
-        this.transactionService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

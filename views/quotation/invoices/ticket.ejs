@@ -54,7 +54,7 @@
             <% for (const item of data.quotation.cotizacionDetalles) { %>
               <tr>
                   <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
-                  <td class="text-left"><p>G<%= item.producto.nombre %></p></td>
+                  <td class="text-left"><p><%= item.producto.nombre %></p></td>
                   <td class="text-center"><p><%= formatDecimal(item.precio) %></p></td>
                   <td class="text-right"><p><%= formatDecimal(item.precio * item.cantidad) %></p></td>
               </tr>

@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesDispatchGuideDto } from './dto/invoices-dispatch-guide.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('DispatchGuide')
 @Controller('dispatch-guide')
@@ -30,27 +31,28 @@ export class DispatchGuideController {
     @Body() body: InvoicesDispatchGuideDto,
   ) {
     try {
-      const width = body.size || 'A4';
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
       let template = 'dispatch-guide/invoices/a4.ejs';
-      if (width === 'A4') {
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
         template = 'dispatch-guide/invoices/a4.ejs';
-      } else if (width === '80mm') {
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
         template = 'dispatch-guide/invoices/ticket.ejs';
-      } else if (width === '58mm') {
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
         template = 'dispatch-guide/invoices/ticket.ejs';
       }
 
       const data = await this.dispatchGuideService.pdfInvoice(body);
-
-      const fileName = data.title;
 
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -62,16 +64,17 @@ export class DispatchGuideController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'COMPRA';
+      const width = SizePrint.A4;
+
+      const data = this.dispatchGuideService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'dispatch-guide/reports/a4.ejs',
         width,
-        this.dispatchGuideService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

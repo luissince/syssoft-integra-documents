@@ -18,6 +18,8 @@ import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { ProductDto } from './dto/product.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
+import { CodBarDto } from './dto/codbar.dto';
+import { SizePrint } from 'src/common/enums/size.enum';
 
 @ApiTags('Product')
 @Controller('product')
@@ -27,16 +29,17 @@ export class ProductController {
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
     try {
-      const width = 'A4';
-      const fileName = 'PRODUCTO';
+      const width = SizePrint.A4;
+
+      const data = this.productService.pdfReport();
 
       const buffer: Uint8Array = await generatePDF(
         'product/reports/a4.ejs',
         width,
-        this.productService.pdfReport(),
+        data,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -89,8 +92,7 @@ export class ProductController {
   @Post('pdf/catalog')
   async pdfCatalog(@Res() res: Response, @Body() body: ProductDto) {
     try {
-      const width = 'A4';
-      const fileName = 'CATALOGO PRODUCTOS';
+      const width = SizePrint.A4;
       const template = 'product/catalog/a4.ejs';
 
       const data = this.productService.pdfCatalog(body);
@@ -105,7 +107,34 @@ export class ProductController {
         false,
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error al generar el PDF',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('pdf/codbar')
+  async pdf(@Res() res: Response, @Body() body: CodBarDto) {
+    try {
+      const width = SizePrint.A4;
+      const template = 'product/codbar/a4.ejs';
+
+      const data = this.productService.pdfCodBar(body);
+
+      const buffer: Uint8Array = await generatePDF(
+        template,
+        width,
+        {
+          ...data,
+          formatDecimal,
+        },
+        false,
+      );
+
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

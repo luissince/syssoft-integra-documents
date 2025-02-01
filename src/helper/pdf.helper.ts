@@ -69,11 +69,13 @@ export const generatePDF = async (
     const context = await browser.newContext();
     const page = await context.newPage();
 
+    let pdfOptions: any;
+
     if (width === 'A4') {
       await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => document.fonts.ready);
 
-      const buffer = await page.pdf({
+      pdfOptions = {
         // path: 'output.pdf',
         displayHeaderFooter: true,
         headerTemplate: templateHeader,
@@ -81,11 +83,7 @@ export const generatePDF = async (
         format: 'A4',
         printBackground: true,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
-      });
-
-      await browser.close();
-
-      return buffer;
+      };
     } else {
       const widthPx = Math.round(
         millimetersToPixels(Number(width.replace('mm', ''))),
@@ -97,18 +95,20 @@ export const generatePDF = async (
       await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => document.fonts.ready);
 
-      const buffer = await page.pdf({
+      pdfOptions = {
         // path: 'output.pdf',
         width: `${width}`,
         height: `${heightMm}mm`,
         printBackground: true,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
-      });
-
-      await browser.close();
-
-      return buffer;
+      };
     }
+
+    const buffer = await page.pdf(pdfOptions);
+
+    await browser.close();
+
+    return buffer;
   } catch (error) {
     throw new Error(error.message || 'Error al generar el PDF');
   }
@@ -119,9 +119,20 @@ export const sendPdfResponse = (
   buffer: Uint8Array,
   fileName: string,
 ) => {
+  // Codificar el nombre del archivo en formato URL
+  const encodedFileName = encodeURIComponent(fileName);
+
+  // Configurar los encabezados de la respuesta
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `inline; filename=${fileName}.pdf`);
   res.setHeader('Content-Length', buffer.byteLength);
+
+  // Usar el formato "filename*" para soportar caracteres especiales (RFC 5987)
+  res.setHeader(
+    'Content-Disposition',
+    `inline; filename="${encodedFileName}.pdf"; filename*=UTF-8''${encodedFileName}.pdf`,
+  );
+
+  // Enviar el archivo PDF
   res.end(buffer);
 };
 
@@ -130,11 +141,22 @@ export const sendExcelResponse = (
   buffer: ArrayBuffer,
   fileName: string,
 ) => {
+  // Codificar el nombre del archivo en formato URL
+  const encodedFileName = encodeURIComponent(fileName);
+
+  // Configurar los encabezados de la respuesta
   res.setHeader(
     'Content-Type',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   );
-  res.setHeader('Content-Disposition', `attachment; filename=${fileName}.xlsx`);
   res.setHeader('Content-Length', buffer.byteLength);
-  res.end(buffer);
+
+  // Usar el formato "filename*" para soportar caracteres especiales (RFC 5987)
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename="${encodedFileName}.xlsx"; filename*=UTF-8''${encodedFileName}.xlsx`,
+  );
+
+  // Enviar el archivo Excel
+  res.end(Buffer.from(buffer));
 };
