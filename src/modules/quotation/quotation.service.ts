@@ -116,7 +116,7 @@ export class QuotationService {
         },
       },
       banks: body.banks,
-      title: `COTIZACIÓN ${body.quotation.comprobante.serie}-${numeracion}`,
+      title: `COTIZACIÓN ${body.quotation.comprobante.serie}-${numeracion} - ${body.quotation.cliente.informacion}`,
     };
   }
 

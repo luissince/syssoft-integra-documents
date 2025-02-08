@@ -89,7 +89,7 @@ export class OrderService {
         body.order.moneda.nombre,
       ),
       banks: body.banks,
-      title: `PEDIDO ${body.order.comprobante.serie}-${numeracion}`,
+      title: `PEDIDO ${body.order.comprobante.serie}-${numeracion} - ${body.order.cliente.informacion}`,
     };
   }
 

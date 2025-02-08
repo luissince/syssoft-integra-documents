@@ -48,7 +48,7 @@ export class CollectionService {
         true,
         body.collection.moneda.nombre,
       ),
-      title: `COBRO ${body.collection.comprobante.serie}-${numeracion}`,
+      title: `COBRO ${body.collection.comprobante.serie}-${numeracion} - ${body.collection.cliente.informacion}`,
     };
   }
 

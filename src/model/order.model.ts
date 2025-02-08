@@ -6,7 +6,7 @@ import User from './user.model';
 
 class Order {
   private _idPedido: string;
-  private _idProveedor: string;
+  private _idCliente: string;
   private _idUsuario: string;
   private _idComprobante: string;
   private _idSucursal: string;
@@ -18,7 +18,7 @@ class Order {
   private _estado: boolean;
   private _fecha: string;
   private _hora: string;
-  private _proveedor: Person;
+  private _cliente: Person;
   private _comprobante: Receipt;
   private _moneda: Currency;
   private _usuario: User;
@@ -32,12 +32,12 @@ class Order {
     this._idPedido = _idPedido;
   }
 
-  get idProveedor(): string {
-    return this._idProveedor;
+  get idCliente(): string {
+    return this._idCliente;
   }
 
-  set idProveedor(_idProveedor: string) {
-    this._idProveedor = _idProveedor;
+  set idCliente(_idCliente: string) {
+    this._idCliente = _idCliente;
   }
 
   get idUsuario(): string {
@@ -128,12 +128,12 @@ class Order {
     this._hora = _hora;
   }
 
-  get proveedor(): Person {
-    return this._proveedor;
+  get cliente(): Person {
+    return this._cliente;
   }
 
-  set proveedor(_proveedor: Person) {
-    this._proveedor = _proveedor;
+  set cliente(_cliente: Person) {
+    this._cliente = _cliente;
   }
 
   get comprobante(): Receipt {

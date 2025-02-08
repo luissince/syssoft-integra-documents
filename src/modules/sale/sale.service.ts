@@ -94,7 +94,7 @@ export class SaleService {
       ),
       base64QR,
       banks: body.banks,
-      title: `VENTA ${body.sale.comprobante.serie}-${numeracion}`,
+      title: `VENTA ${body.sale.comprobante.serie}-${numeracion} - ${body.sale.cliente.informacion}`,
     };
   }
 

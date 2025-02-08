@@ -48,7 +48,7 @@ export class DispatchGuideService {
         },
       },
       base64QR,
-      title: `GUIA DE REMISION ${body.dispatchGuide.comprobante.serie}-${numeracion}`,
+      title: `GUIA DE REMISION ${body.dispatchGuide.comprobante.serie}-${numeracion} - ${body.dispatchGuide.venta.cliente.informacion}`,
     };
   }
 

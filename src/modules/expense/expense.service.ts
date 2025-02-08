@@ -48,7 +48,7 @@ export class ExpenseService {
         true,
         body.expense.moneda.nombre,
       ),
-      title: `GASTO ${body.expense.comprobante.serie}-${numeracion}`,
+      title: `GASTO ${body.expense.comprobante.serie}-${numeracion} - ${body.expense.proveedor.informacion}`,
     };
   }
 

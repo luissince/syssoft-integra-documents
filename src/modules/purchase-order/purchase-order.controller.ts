@@ -47,14 +47,12 @@ export class PurchaseOrderController {
 
       const data = this.purchaseOrderService.pdfInvoice(body);
 
-      const fileName = data.tile;
-
       const buffer: Uint8Array = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse(res, buffer, data.title);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

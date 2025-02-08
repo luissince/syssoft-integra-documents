@@ -94,7 +94,7 @@ export class PurchaseService {
         body.purchase.moneda.nombre,
       ),
       banks: body.banks,
-      title: `COMPRA ${body.purchase.comprobante.serie}-${numeracion}`,
+      title: `COMPRA ${body.purchase.comprobante.serie}-${numeracion} - ${body.purchase.proveedor.informacion}`,
     };
   }
 

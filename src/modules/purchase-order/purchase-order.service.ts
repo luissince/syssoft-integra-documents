@@ -94,7 +94,7 @@ export class PurchaseOrderService {
         body.purchaseOrder.moneda.nombre,
       ),
       banks: body.banks,
-      title: `ORDEN DE COMPRA ${body.purchaseOrder.comprobante.serie}-${numeracion}`,
+      title: `ORDEN DE COMPRA ${body.purchaseOrder.comprobante.serie}-${numeracion} - ${body.purchaseOrder.proveedor.informacion}`,
     };
   }
 
