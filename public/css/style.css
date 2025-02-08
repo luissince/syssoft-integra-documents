@@ -142,7 +142,7 @@ body {
 /* Table */
 
 .table {
-    border-collapse: collapse; 
+    border-collapse: collapse;
 }
 
 .table th {
@@ -2599,4 +2599,44 @@ body {
 
 .align-items-baseline {
     align-items: baseline;
+}
+
+.static {
+    position: static;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+.sticky {
+    position: sticky;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-clip {
+    overflow: clip;
+}
+
+.overflow-visible {
+    overflow: visible;
+}
+
+.overflow-scroll {
+    overflow: scroll;
 }

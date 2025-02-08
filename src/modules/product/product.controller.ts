@@ -122,7 +122,7 @@ export class ProductController {
       const width = SizePrint.A4;
       const template = 'product/codbar/a4.ejs';
 
-      const data = this.productService.pdfCodBar(body);
+      const data = await this.productService.pdfCodBar(body);
 
       const buffer: Uint8Array = await generatePDF(
         template,
@@ -136,6 +136,7 @@ export class ProductController {
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,

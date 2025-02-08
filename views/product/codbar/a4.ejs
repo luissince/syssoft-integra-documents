@@ -5,93 +5,73 @@
     <link rel="stylesheet" href="<%= style %>" />
     <title><%= title %></title>
     <style>
-      .main {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 5mm;
+      :root {
+        --page-width: 210mm;
+        --page-height: 297mm;
+        --content-padding: 20mm;
       }
 
-      .label {
-        width: 90mm; /* 9 cm de ancho por etiqueta */
-        height: 60mm; /* 6 cm de alto por etiqueta */
+      .page {
+        width: var(--page-width);
+        height: var(--page-height);
+        overflow: hidden;
+        page-break-after: always;
+        position: relative;
+        background: white;
+      }
+
+      .container{
+        padding: 7mm; 
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 7mm;
+      }
+
+      .bar-code {
+        width: 60mm; /* 9 cm de ancho por etiqueta */
+        height: 30mm; /* 6 cm de alto por etiqueta */
         border: 1px solid #000;
-        padding: 5mm;
-        box-sizing: border-box;
         text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: space-evenly;
       }
 
       .product-name {
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: bold;
-        margin-bottom: 10px;
-      }
-
-      .barcode {
-        flex-grow: 1;
       }
 
       .price {
-        font-size: 12px;
-        position: relative;
-        bottom: 5px;
+        font-size: 1rem;
         font-weight: bold;
         color: #333;
       }
 
-      .barcode img {
-        max-width: 100%;
-        height: auto;
+      .image{
+        background-color: white;
       }
 
-      .container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10mm;
+      .image img {
+        max-width: 100%;
+        height: auto;
       }
     </style>
   </head>
   <body>
-    <div class="main">
-      <div class="container">
-        <div class="label">
-          <div class="product-name">Producto 1</div>
-          <div class="barcode">
-            <img
-              src="https://api.barcodes4.me/barcode/c128b/123456789012.png?width=200&height=100"
-              alt="Código de Barras"
-            />
-          </div>
-          <div class="price">$15.00</div>
+      <div class="page">
+        <div class="container">
+            <% for (let i = 0; i < 8; i++) { %>
+              <div class="bar-code">
+                <div class="product-name">Producto 1</div>
+                <div class="image">
+                  <img src="data:image/png;base64,<%= base64QR %>" alt="Código de Barras" width="150" />
+                </div>
+                <div class="price">$15.00</div>
+              </div>
+            <% } %>
         </div>
-
-        <div class="label">
-          <div class="product-name">Producto 2</div>
-          <div class="barcode">
-            <img
-              src="https://api.barcodes4.me/barcode/c128b/987654321098.png?width=200&height=100"
-              alt="Código de Barras"
-            />
-          </div>
-          <div class="price">$20.00</div>
-        </div>
-
-        <div class="label">
-          <div class="product-name">Producto 3</div>
-          <div class="barcode">
-            <img
-              src="https://api.barcodes4.me/barcode/c128b/112233445566.png?width=200&height=100"
-              alt="Código de Barras"
-            />
-          </div>
-          <div class="price">$25.00</div>
-        </div>
-
-        <!-- Puedes agregar más etiquetas de productos aquí siguiendo el mismo formato -->
       </div>
-    </div>
   </body>
 </html>
