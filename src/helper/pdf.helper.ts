@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { Response } from 'express';
 import { chromium, Browser, BrowserContext, Page } from 'playwright';
+import { PdfOptions } from 'src/common/interfaces/pdf-options.inteface';
+import { SizePrint } from 'src/common/enums/size.enum';
 
 async function measureHeight(
   htmlContent: string,
@@ -110,7 +112,53 @@ export const generatePDF = async (
 
     return buffer;
   } catch (error) {
-    throw new Error(error.message || 'Error al generar el PDF');
+    throw error;
+  }
+};
+
+export const generatePDFFromHTML = async ({
+  htmlContent,
+  width,
+  height,
+  margin = { top: 0, bottom: 0, left: 0, right: 0 },
+}: PdfOptions): Promise<Uint8Array> => {
+  try {
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => document.fonts.ready);
+
+    const pdfOptions: any = {
+      printBackground: true,
+      margin: margin,
+    };
+
+    if (width && height) {
+      pdfOptions.width = `${width}mm`;
+      pdfOptions.height = `${height}mm`;
+    } else if (width === SizePrint.A4) {
+      pdfOptions.format = SizePrint.A4;
+    } else if (width) {
+      const widthPx = Math.round(
+        millimetersToPixels(Number(width.replace('mm', ''))),
+      );
+
+      const heightPx = await measureHeight(htmlContent, widthPx);
+      const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
+
+      pdfOptions.width = width;
+      pdfOptions.height = `${heightMm}mm`;
+    }
+
+    const buffer = await page.pdf(pdfOptions);
+
+    await browser.close();
+
+    return buffer;
+  } catch (error) {
+    throw error;
   }
 };
 
