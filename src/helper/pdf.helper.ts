@@ -127,18 +127,21 @@ export const generatePDFFromHTML = async ({
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => document.fonts.ready);
-
     const pdfOptions: any = {
       printBackground: true,
       margin: margin,
     };
 
     if (width && height) {
+      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.fonts.ready);
+
       pdfOptions.width = `${width}mm`;
       pdfOptions.height = `${height}mm`;
     } else if (width === SizePrint.A4) {
+      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.fonts.ready);
+
       pdfOptions.format = SizePrint.A4;
     } else if (width) {
       const widthPx = Math.round(
@@ -147,6 +150,9 @@ export const generatePDFFromHTML = async ({
 
       const heightPx = await measureHeight(htmlContent, widthPx);
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
+
+      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.fonts.ready);
 
       pdfOptions.width = width;
       pdfOptions.height = `${heightMm}mm`;
