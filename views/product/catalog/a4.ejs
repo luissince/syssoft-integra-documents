@@ -406,6 +406,7 @@
                       <p class="font-weight-bold"><%= product.nombre %></p>
                     </h2>
                     <p class="product-description"><%= product.descripcionCorta %></p>
+                    <p class="product-description">x <%= product.medida.nombre %> </p>
                     <div class="product-price"><%= moneda.simbolo %> <%= formatDecimal(product.precios[0].precio ?? 0) %></div>
                 </div>
             <% }); %>
