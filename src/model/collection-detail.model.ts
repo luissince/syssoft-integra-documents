@@ -1,4 +1,4 @@
-import Concept from './Concept.model';
+import Concept from './concept.model';
 
 class CollectionDetail {
   private _idCobroDetalle: number;

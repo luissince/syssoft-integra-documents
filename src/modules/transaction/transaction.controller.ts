@@ -14,15 +14,17 @@ import {
   sendExcelResponse,
   sendPdfResponse,
 } from 'src/helper/pdf.helper';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesTransactionDto } from './dto/invoices-transaction.dto';
 import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
+import { ReportsTransactionDto } from './dto/reports-transaction.dto';
+import { formatDate, formatDecimal } from 'src/helper/utils.helper';
 
 @ApiTags('Transaction')
 @Controller('transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(private readonly transactionService: TransactionService) { }
 
   @Post('pdf/invoices')
   async pdfInvoices(
@@ -58,20 +60,37 @@ export class TransactionController {
   }
 
   @Post('pdf/reports')
-  async pdfReport(@Req() req: Request, @Res() res: Response) {
+  async pdfReport(@Res() res: Response, @Body() body: ReportsTransactionDto) {
     try {
-      const width = SizePrint.A4;
+      let width: SizePaper | SizePrint = body.size || SizePaper.A4;
 
-      const data = this.transactionService.pdfReport();
+      let template = 'transaction/reports/a4.ejs';
+      if (width === SizePaper.A4) {
+        width = SizePrint.A4;
+        template = 'transaction/reports/a4.ejs';
+      } else if (width === SizePaper.mm80) {
+        width = SizePrint.mm72;
+        template = 'transaction/reports/ticket.ejs';
+      } else if (width === SizePaper.mm58) {
+        width = SizePrint.mm48;
+        template = 'transaction/reports/ticket.ejs';
+      }
+
+      const data = this.transactionService.pdfReport(body);
 
       const buffer: Uint8Array = await generatePDF(
-        'transaction/reports/a4.ejs',
+        template,
         width,
-        data,
+        {
+          ...data,
+          formatDate,
+          formatDecimal
+        },
       );
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,

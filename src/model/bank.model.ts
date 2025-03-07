@@ -7,7 +7,7 @@ class Bank {
   private _idSucursal: string;
   private _cci: string;
   private _preferido: string;
-  private _vuelto: string;
+  private _saldo: string;
   private _reporte: string;
   private _estado: string;
   private _fecha: string;
@@ -80,12 +80,12 @@ class Bank {
     this._preferido = _preferido;
   }
 
-  get vuelto(): string {
-    return this._vuelto;
+  get saldo(): string {
+    return this._saldo;
   }
 
-  set vuelto(_vuelto: string) {
-    this._vuelto = _vuelto;
+  set saldo(_vuelto: string) {
+    this._saldo = _vuelto;
   }
 
   get reporte(): string {
