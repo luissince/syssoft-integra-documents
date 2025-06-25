@@ -32,8 +32,6 @@ El proceso de despliegue se realiza utilizando herramientas como Docker Compose 
 
 - [Docker Compose](https://docs.docker.com/compose/) Es una herramienta de línea de comandos para crear y administrar aplicaciones y servicios de Docker.
 
-- [Kubernetes](https://kubernetes.io/) Es un orquestador de contenedores que automatiza la creación, ejecución y administración de contenedores.
-
 - [Git](https://git-scm.com/) Es un sistema de control de versiones distribuido que permite rastrear cambios en archivos y directorios.
 
 - [Git Hub](https://github.com/) Es un sitio web que permite alojar repositorios de código en línea y colaborar en proyectos.
@@ -120,8 +118,8 @@ Si deseas contribuir al proyecto, puedes seguir los siguientes pasos:
 
     ```bash
     NODE_ENV=development
-    PORT=3000
-    APP_URL=http://localhost:3001
+    PORT=8000
+    APP_URL=http://localhost:8000
     CORS_ORIGIN=*
     ```
 
