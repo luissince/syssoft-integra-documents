@@ -1,10 +1,12 @@
+// src/helper/pdf.helper.ts
 import { readFile } from 'fs/promises';
 import * as path from 'path';
 import * as ejs from 'ejs';
 import { PdfOptions } from 'src/common/interfaces/pdf-options.inteface';
 import { SizePrint } from 'src/common/enums/size.enum';
-import { millimetersToPixels, pixelsToMillimeters } from './utils.helper';
+import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
 import { getBrowserContext } from 'src/handlers/pdf.handler';
+import { Page } from 'playwright';
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -37,7 +39,7 @@ async function measureHeight(
     const boundingBox = await body.boundingBox();
     return Math.ceil(boundingBox.height);
   } finally {
-    await page.close(); // ← cerramos solo la página
+    await page.close();
   }
 }
 
@@ -49,9 +51,14 @@ export const generatePDF = async (
   width: string,
   data: ejs.Data,
   isFooter: boolean = true,
-): Promise<Uint8Array> => {
+): Promise<Buffer> => {
+  let page: Page | null = null;
+
   try {
+    const stopAll = startTimer("TOTAL generatePDF");
+
     const viewsPath = path.join(__dirname, '..', '..', 'views');
+    const stopLoadTemplates = startTimer("Load templates");
     const [templateHeader, templateContent, templateFooter] = await Promise.all(
       [
         loadTemplate(path.join(viewsPath, 'template', 'header.html')),
@@ -59,22 +66,32 @@ export const generatePDF = async (
         loadTemplate(path.join(viewsPath, 'template', 'footer.html')),
       ],
     );
+    stopLoadTemplates();
 
+    const stopRender = startTimer("EJS render");
     const htmlMainContent = ejs.render(templateContent, data);
+    console.log(`[DEBUG] HTML length: ${htmlMainContent.length} chars`);
+    stopRender();
+
     const context = await getBrowserContext();
-    const page = await context.newPage();
+    page = await context.newPage();
 
     let pdfOptions: any;
 
-    if (width === 'A4') {
-      await page.setContent(htmlMainContent, {
-        waitUntil: 'networkidle',
-        timeout: 30000,
-      });
-      await page.waitForFunction(() => document.fonts.ready, {
-        timeout: 30000,
-      });
+    const stopSetContent = startTimer("page.setContent");
+    await page.setContent(htmlMainContent, {
+      waitUntil: 'networkidle',
+      timeout: 60000, // extendemos timeout para catálogos grandes
+    });
+    stopSetContent();
 
+    const stopFonts = startTimer("waitForFonts");
+    await page.waitForFunction(() => document.fonts.ready, {
+      timeout: 60000,
+    });
+    stopFonts();
+
+    if (width === 'A4') {
       pdfOptions = {
         displayHeaderFooter: true,
         headerTemplate: templateHeader,
@@ -84,18 +101,12 @@ export const generatePDF = async (
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
       };
     } else {
+      const stopMeasure = startTimer("measureHeight");
       const widthMm = Number(width.replace('mm', ''));
       const widthPx = Math.round(millimetersToPixels(widthMm));
       const heightPx = await measureHeight(htmlMainContent, widthPx);
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
-
-      await page.setContent(htmlMainContent, {
-        waitUntil: 'networkidle',
-        timeout: 30000,
-      });
-      await page.waitForFunction(() => document.fonts.ready, {
-        timeout: 30000,
-      });
+      stopMeasure();
 
       pdfOptions = {
         width: `${widthMm}mm`,
@@ -105,12 +116,22 @@ export const generatePDF = async (
       };
     }
 
+    const stopPdf = startTimer("page.pdf");
     const buffer = await page.pdf(pdfOptions);
-    await page.close();
+    stopPdf();
+
+    stopAll();
+
+    // Memoria actual del proceso
+    const mem = process.memoryUsage();
+    console.log(`[MEMORY] rss=${(mem.rss / 1024 / 1024).toFixed(2)}MB heapUsed=${(mem.heapUsed / 1024 / 1024).toFixed(2)}MB`);
 
     return buffer;
   } catch (error) {
+    console.error("[ERROR generatePDF]", error);
     throw error;
+  } finally {
+    await page?.close();
   }
 };
 
@@ -119,10 +140,12 @@ export const generatePDFFromHTML = async ({
   width,
   height,
   margin = { top: 0, bottom: 0, left: 0, right: 0 },
-}: PdfOptions): Promise<Uint8Array> => {
+}: PdfOptions): Promise<Buffer> => {
+  let page: Page | null = null;
+
   try {
     const context = await getBrowserContext();
-    const page = await context.newPage();
+    page = await context.newPage();
 
     const pdfOptions: any = {
       printBackground: true,
@@ -176,5 +199,7 @@ export const generatePDFFromHTML = async ({
     return buffer;
   } catch (error) {
     throw error;
+  } finally {
+    page?.close();
   }
 };
