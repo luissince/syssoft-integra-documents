@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  generatePDF,
-  sendExcelResponse,
-  sendPdfResponse,
-} from 'src/helper/pdf.helper';
+import { generatePDF } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { SizePrint } from 'src/common/enums/size.enum';
+import {
+  sendExcelResponse,
+  sendPdfResponse,
+} from 'src/handlers/pdf-response.handler';
 
 @ApiTags('Person')
 @Controller('person')

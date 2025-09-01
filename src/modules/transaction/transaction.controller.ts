@@ -3,28 +3,27 @@ import {
   HttpException,
   HttpStatus,
   Res,
-  Req,
   Post,
   Body,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  generatePDF,
-  sendExcelResponse,
-  sendPdfResponse,
-} from 'src/helper/pdf.helper';
+import { generatePDF } from 'src/helper/pdf.helper';
 import { Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesTransactionDto } from './dto/invoices-transaction.dto';
 import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 import { ReportsTransactionDto } from './dto/reports-transaction.dto';
 import { formatDate, formatDecimal } from 'src/helper/utils.helper';
+import {
+  sendExcelResponse,
+  sendPdfResponse,
+} from 'src/handlers/pdf-response.handler';
 
 @ApiTags('Transaction')
 @Controller('transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) { }
+  constructor(private readonly transactionService: TransactionService) {}
 
   @Post('pdf/invoices')
   async pdfInvoices(
@@ -78,15 +77,11 @@ export class TransactionController {
 
       const data = this.transactionService.pdfReport(body);
 
-      const buffer: Uint8Array = await generatePDF(
-        template,
-        width,
-        {
-          ...data,
-          formatDate,
-          formatDecimal
-        },
-      );
+      const buffer: Uint8Array = await generatePDF(template, width, {
+        ...data,
+        formatDate,
+        formatDecimal,
+      });
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {

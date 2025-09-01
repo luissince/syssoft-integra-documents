@@ -9,16 +9,16 @@ import {
 } from '@nestjs/common';
 import { CollectionService } from './collection.service';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  generatePDF,
-  sendExcelResponse,
-  sendPdfResponse,
-} from 'src/helper/pdf.helper';
+import { generatePDF } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { InvoicesCollectionDto } from './dto/invoices-collection.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
 import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
+import {
+  sendExcelResponse,
+  sendPdfResponse,
+} from 'src/handlers/pdf-response.handler';
 
 @ApiTags('Collection')
 @Controller('collection')

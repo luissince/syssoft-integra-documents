@@ -9,17 +9,17 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  generatePDF,
-  sendExcelResponse,
-  sendPdfResponse,
-} from 'src/helper/pdf.helper';
+import { generatePDF } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
 import { ProductDto } from './dto/product.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
 import { CodBarDto } from './dto/codbar.dto';
 import { SizePrint } from 'src/common/enums/size.enum';
+import {
+  sendExcelResponse,
+  sendPdfResponse,
+} from 'src/handlers/pdf-response.handler';
 
 @ApiTags('Product')
 @Controller('product')

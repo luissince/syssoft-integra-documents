@@ -44,7 +44,7 @@ export class ProductService {
       height: 7,
       includetext: true,
     });
-   
+
     const base64QR = buffer.toString('base64');
 
     return {
