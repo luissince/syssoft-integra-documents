@@ -190,3 +190,18 @@ export const pixelsToMillimeters = (px: number): number => {
 export const millimetersToPixels = (mm: number): number => {
   return mm * (96 / 25.4);
 };
+
+/**
+ * Starts a timer and returns a function to stop the timer
+ * @param label Label to identify the timer
+ * @returns 
+ */
+export const startTimer = (label: string) => {
+  const start = process.hrtime.bigint();
+  return () => {
+    const end = process.hrtime.bigint();
+    const ms = Number(end - start) / 1_000_000;
+    console.log(`[TIMER] ${label}: ${ms.toFixed(2)} ms`);
+    return ms;
+  };
+};

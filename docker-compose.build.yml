@@ -1,8 +1,7 @@
 services:
   app:
-    container_name: service-documents-test
+    image: documents
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    container_name: documents

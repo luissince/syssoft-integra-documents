@@ -1,15 +1,10 @@
 services:
   documents-services-production:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: sysintegra-documents-image
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/syssoftintegra/documents:latest
     container_name: sysintegra-documents
     restart: always
     networks:
       - luis
-    # ports:
-      # - 6506:80
 
 networks:
   luis:
