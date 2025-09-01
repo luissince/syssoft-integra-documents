@@ -172,3 +172,21 @@ function parseFormatDate(date: Date): string {
 function padZeroes(num: number): string | number {
   return num > 9 ? num : '0' + num;
 }
+
+/**
+ * Converts pixels to millimeters
+ * @param px Pixels value
+ * @returns Value in millimeters
+ */
+export const pixelsToMillimeters = (px: number): number => {
+  return px / 3.77952756;
+};
+
+/**
+ * Converts millimeters to pixels
+ * @param mm Millimeters value
+ * @returns Value in pixels
+ */
+export const millimetersToPixels = (mm: number): number => {
+  return mm * (96 / 25.4);
+};

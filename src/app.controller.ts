@@ -11,9 +11,10 @@ import { Response } from 'express';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SizePaper, SizePrint } from './common/enums/size.enum';
-import { generatePDFFromHTML, sendPdfResponse } from './helper/pdf.helper';
+import { generatePDFFromHTML } from './helper/pdf.helper';
 import { PdfOptions } from './common/interfaces/pdf-options.inteface';
 import PdfDto from './common/class/dto/pdf.class.dto';
+import { sendPdfResponse } from './handlers/pdf-response.handler';
 
 @ApiTags('Root')
 @Controller()

@@ -1,50 +1,49 @@
 import { readFile } from 'fs/promises';
 import * as path from 'path';
 import * as ejs from 'ejs';
-import { Response } from 'express';
-import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import { PdfOptions } from 'src/common/interfaces/pdf-options.inteface';
 import { SizePrint } from 'src/common/enums/size.enum';
+import { millimetersToPixels, pixelsToMillimeters } from './utils.helper';
+import { getBrowserContext } from 'src/handlers/pdf.handler';
 
+// Cache para templates
+const templateCache = new Map<string, string>();
+
+async function loadTemplate(filePath: string): Promise<string> {
+  if (!templateCache.has(filePath)) {
+    const content = await readFile(filePath, 'utf8');
+    templateCache.set(filePath, content);
+  }
+  return templateCache.get(filePath);
+}
+
+// Medir altura usando Playwright (por ahora, lo mejoraremos después)
 async function measureHeight(
   htmlContent: string,
   width: number,
 ): Promise<number> {
-  let browser: Browser | null = null;
-  let context: BrowserContext | null = null;
-  let page: Page | null = null;
+  const context = await getBrowserContext();
+  const page = await context.newPage();
 
   try {
-    browser = await chromium.launch({ headless: true });
-    context = await browser.newContext({
-      viewport: { width: width, height: 10 },
-      // screen: { width: 1920, height: 1080 },
-      deviceScaleFactor: 1,
-      isMobile: false,
+    await page.setViewportSize({ width, height: 10 });
+    await page.setContent(htmlContent, {
+      waitUntil: 'networkidle',
+      timeout: 30000,
     });
-    page = await context.newPage();
+    await page.waitForFunction(() => document.fonts.ready, { timeout: 30000 });
 
-    await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-
-    const bodyHandle = await page.$('body');
-    const boundingBox = await bodyHandle.boundingBox();
-
+    const body = await page.$('body');
+    const boundingBox = await body.boundingBox();
     return Math.ceil(boundingBox.height);
   } finally {
-    await page?.close();
-    await context?.close();
-    await browser?.close();
+    await page.close(); // ← cerramos solo la página
   }
 }
 
-const pixelsToMillimeters = (px: number) => {
-  return px / 3.77952756;
-};
-
-const millimetersToPixels = (mm: number) => {
-  return mm * (96 / 25.4);
-};
-
+/**
+ * Genera un PDF usando una plantilla EJS
+ */
 export const generatePDF = async (
   template: string,
   width: string,
@@ -52,33 +51,31 @@ export const generatePDF = async (
   isFooter: boolean = true,
 ): Promise<Uint8Array> => {
   try {
-    const templateHeader = await readFile(
-      path.join(__dirname, '..', '..', 'views', 'template', 'header.html'),
-      'utf8',
-    );
-    const templateContent = await readFile(
-      path.join(__dirname, '..', '..', 'views', template),
-      'utf8',
-    );
-    const templateFooter = await readFile(
-      path.join(__dirname, '..', '..', 'views', 'template', 'footer.html'),
-      'utf8',
+    const viewsPath = path.join(__dirname, '..', '..', 'views');
+    const [templateHeader, templateContent, templateFooter] = await Promise.all(
+      [
+        loadTemplate(path.join(viewsPath, 'template', 'header.html')),
+        loadTemplate(path.join(viewsPath, template)),
+        loadTemplate(path.join(viewsPath, 'template', 'footer.html')),
+      ],
     );
 
     const htmlMainContent = ejs.render(templateContent, data);
-
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
+    const context = await getBrowserContext();
     const page = await context.newPage();
 
     let pdfOptions: any;
 
     if (width === 'A4') {
-      await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.setContent(htmlMainContent, {
+        waitUntil: 'networkidle',
+        timeout: 30000,
+      });
+      await page.waitForFunction(() => document.fonts.ready, {
+        timeout: 30000,
+      });
 
       pdfOptions = {
-        // path: 'output.pdf',
         displayHeaderFooter: true,
         headerTemplate: templateHeader,
         footerTemplate: isFooter ? templateFooter : '',
@@ -87,19 +84,21 @@ export const generatePDF = async (
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
       };
     } else {
-      const widthPx = Math.round(
-        millimetersToPixels(Number(width.replace('mm', ''))),
-      );
-
+      const widthMm = Number(width.replace('mm', ''));
+      const widthPx = Math.round(millimetersToPixels(widthMm));
       const heightPx = await measureHeight(htmlMainContent, widthPx);
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
 
-      await page.setContent(htmlMainContent, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.setContent(htmlMainContent, {
+        waitUntil: 'networkidle',
+        timeout: 30000,
+      });
+      await page.waitForFunction(() => document.fonts.ready, {
+        timeout: 30000,
+      });
 
       pdfOptions = {
-        // path: 'output.pdf',
-        width: `${width}`,
+        width: `${widthMm}mm`,
         height: `${heightMm}mm`,
         printBackground: true,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
@@ -107,8 +106,7 @@ export const generatePDF = async (
     }
 
     const buffer = await page.pdf(pdfOptions);
-
-    await browser.close();
+    await page.close();
 
     return buffer;
   } catch (error) {
@@ -123,8 +121,7 @@ export const generatePDFFromHTML = async ({
   margin = { top: 0, bottom: 0, left: 0, right: 0 },
 }: PdfOptions): Promise<Uint8Array> => {
   try {
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
+    const context = await getBrowserContext();
     const page = await context.newPage();
 
     const pdfOptions: any = {
@@ -133,14 +130,24 @@ export const generatePDFFromHTML = async ({
     };
 
     if (width && height) {
-      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.setContent(htmlContent, {
+        waitUntil: 'networkidle',
+        timeout: 30000,
+      });
+      await page.waitForFunction(() => document.fonts.ready, {
+        timeout: 30000,
+      });
 
       pdfOptions.width = `${width}mm`;
       pdfOptions.height = `${height}mm`;
     } else if (width === SizePrint.A4) {
-      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.setContent(htmlContent, {
+        waitUntil: 'networkidle',
+        timeout: 30000,
+      });
+      await page.waitForFunction(() => document.fonts.ready, {
+        timeout: 30000,
+      });
 
       pdfOptions.format = SizePrint.A4;
     } else if (width) {
@@ -151,66 +158,23 @@ export const generatePDFFromHTML = async ({
       const heightPx = await measureHeight(htmlContent, widthPx);
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
 
-      await page.setContent(htmlContent, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => document.fonts.ready);
+      await page.setContent(htmlContent, {
+        waitUntil: 'networkidle',
+        timeout: 30000,
+      });
+      await page.waitForFunction(() => document.fonts.ready, {
+        timeout: 30000,
+      });
 
       pdfOptions.width = width;
       pdfOptions.height = `${heightMm}mm`;
     }
 
     const buffer = await page.pdf(pdfOptions);
-
-    await browser.close();
+    await page.close();
 
     return buffer;
   } catch (error) {
     throw error;
   }
-};
-
-export const sendPdfResponse = (
-  res: Response,
-  buffer: Uint8Array,
-  fileName: string,
-) => {
-  // Codificar el nombre del archivo en formato URL
-  const encodedFileName = encodeURIComponent(fileName);
-
-  // Configurar los encabezados de la respuesta
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Length', buffer.byteLength);
-
-  // Usar el formato "filename*" para soportar caracteres especiales (RFC 5987)
-  res.setHeader(
-    'Content-Disposition',
-    `inline; filename="${encodedFileName}.pdf"; filename*=UTF-8''${encodedFileName}.pdf`,
-  );
-
-  // Enviar el archivo PDF
-  res.end(buffer);
-};
-
-export const sendExcelResponse = (
-  res: Response,
-  buffer: ArrayBuffer,
-  fileName: string,
-) => {
-  // Codificar el nombre del archivo en formato URL
-  const encodedFileName = encodeURIComponent(fileName);
-
-  // Configurar los encabezados de la respuesta
-  res.setHeader(
-    'Content-Type',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  );
-  res.setHeader('Content-Length', buffer.byteLength);
-
-  // Usar el formato "filename*" para soportar caracteres especiales (RFC 5987)
-  res.setHeader(
-    'Content-Disposition',
-    `attachment; filename="${encodedFileName}.xlsx"; filename*=UTF-8''${encodedFileName}.xlsx`,
-  );
-
-  // Enviar el archivo Excel
-  res.end(Buffer.from(buffer));
 };
