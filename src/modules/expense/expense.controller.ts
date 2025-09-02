@@ -44,7 +44,7 @@ export class ExpenseController {
 
       const data = this.expenseService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -65,7 +65,7 @@ export class ExpenseController {
 
       const data = this.expenseService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'expense/reports/a4.ejs',
         width,
         data,

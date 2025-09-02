@@ -47,7 +47,7 @@ export class PurchaseOrderController {
 
       const data = this.purchaseOrderService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -72,7 +72,7 @@ export class PurchaseOrderController {
 
       const fileName = data.title;
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -93,7 +93,7 @@ export class PurchaseOrderController {
 
       const data = this.purchaseOrderService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'purchase-order/reports/a4.ejs',
         width,
         data,

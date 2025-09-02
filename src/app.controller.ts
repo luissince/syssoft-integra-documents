@@ -51,7 +51,7 @@ export class AppController {
         margin: body.margin,
       };
 
-      const buffer: Uint8Array = await generatePDFFromHTML(params);
+      const buffer: Buffer = await generatePDFFromHTML(params);
       return sendPdfResponse(res, buffer, body.title);
     } catch (error) {
       console.log(error);
@@ -304,7 +304,7 @@ export class AppController {
         width: width,
       };
 
-      const buffer: Uint8Array = await generatePDFFromHTML(params);
+      const buffer: Buffer = await generatePDFFromHTML(params);
 
       sendPdfResponse(res, buffer, 'Test PDF');
     } catch (error) {

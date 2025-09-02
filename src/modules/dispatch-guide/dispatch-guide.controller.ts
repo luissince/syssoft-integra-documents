@@ -47,7 +47,7 @@ export class DispatchGuideController {
 
       const data = await this.dispatchGuideService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -68,7 +68,7 @@ export class DispatchGuideController {
 
       const data = this.dispatchGuideService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'dispatch-guide/reports/a4.ejs',
         width,
         data,

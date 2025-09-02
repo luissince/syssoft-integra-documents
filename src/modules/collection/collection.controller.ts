@@ -44,7 +44,7 @@ export class CollectionController {
 
       const data = this.collectionService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -64,7 +64,7 @@ export class CollectionController {
       const width = SizePrint.A4;
       const fileName = 'COMPRA';
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'collection/reports/a4.ejs',
         width,
         this.collectionService.pdfReport(),
