@@ -46,7 +46,7 @@ export class PurchaseController {
 
       const fileName = data.tile;
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -82,7 +82,7 @@ export class PurchaseController {
 
       const data = this.purchaseService.pdfAccountPayable();
 
-      const buffer: Uint8Array = await generatePDF(template, width, data);
+      const buffer: Buffer = await generatePDF(template, width, data);
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {
@@ -100,7 +100,7 @@ export class PurchaseController {
 
       const data = this.purchaseService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'purchase/reports/a4.ejs',
         width,
         data,

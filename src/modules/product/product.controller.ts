@@ -20,6 +20,8 @@ import {
   sendExcelResponse,
   sendPdfResponse,
 } from 'src/handlers/pdf-response.handler';
+import * as path from 'path';
+import { runWorker } from 'src/helper/worker.helper';
 
 @ApiTags('Product')
 @Controller('product')
@@ -33,7 +35,7 @@ export class ProductController {
 
       const data = this.productService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'product/reports/a4.ejs',
         width,
         data,
@@ -97,18 +99,18 @@ export class ProductController {
 
       const data = this.productService.pdfCatalog(body);
 
-      const buffer: Uint8Array = await generatePDF(
-        template,
-        width,
-        {
-          ...data,
-          formatDecimal,
-        },
-        false,
-      );
+      const workerPath = path.join(__dirname, '..', '..', 'workers', 'pdf.worker.js');
+
+      const buffer: Buffer = await runWorker<Buffer>(workerPath, {
+      template,
+      width,
+      data,
+      isFooter: false,
+    });
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -124,7 +126,7 @@ export class ProductController {
 
       const data = await this.productService.pdfCodBar(body);
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         template,
         width,
         {

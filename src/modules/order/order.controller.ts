@@ -44,7 +44,7 @@ export class OrderController {
 
       const data = this.orderService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -68,7 +68,7 @@ export class OrderController {
 
       const data = this.orderService.pdfList(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -89,7 +89,7 @@ export class OrderController {
 
       const data = this.orderService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'order/reports/a4.ejs',
         width,
         data,

@@ -47,7 +47,7 @@ export class TransactionController {
 
       const data = this.transactionService.pdfInvoices();
 
-      const buffer: Uint8Array = await generatePDF(template, width, data);
+      const buffer: Buffer = await generatePDF(template, width, data);
 
       sendPdfResponse(res, buffer, data.title);
     } catch (error) {
@@ -77,7 +77,7 @@ export class TransactionController {
 
       const data = this.transactionService.pdfReport(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         ...data,
         formatDate,
         formatDecimal,

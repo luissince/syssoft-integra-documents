@@ -8,7 +8,7 @@ import { Response } from 'express';
  */
 export function sendPdfResponse(
   res: Response,
-  buffer: Uint8Array,
+  buffer: Buffer,
   fileName: string,
 ): void {
   // Encode the filename for URL compatibility

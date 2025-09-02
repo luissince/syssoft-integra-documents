@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-nestjs:
-    name: Build Service (NestJs)
+    name: Construir y subir imagen a ECR
     runs-on: ubuntu-latest
     environment: production
 
@@ -34,17 +34,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: Iniciar sesión en Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1 
 
-      - name: Tag back-end image
+      - name: Agregar etiqueta latest a la imagen
         run: docker tag documents ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
 
-      - name: Push back-end image to ECR
+      - name: Subir imagen a ECR
         run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
 
   deploy-nestjs:
-    name: Deploy Service (NestJs)
+    name: Deployar en producción
     runs-on: self-hosted
     needs: build-nestjs
 
@@ -63,7 +63,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: Iniciar sesión en Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Descargar imagen desde ECR

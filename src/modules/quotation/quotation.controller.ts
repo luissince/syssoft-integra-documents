@@ -46,7 +46,7 @@ export class QuotationController {
 
       const fileName = data.title;
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -71,7 +71,7 @@ export class QuotationController {
 
       const fileName = data.title;
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -92,7 +92,7 @@ export class QuotationController {
 
       const data = this.quotationService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'quotation/reports/a4.ejs',
         width,
         data,

@@ -44,7 +44,7 @@ export class SaleController {
 
       const data = await this.saleService.pdfInvoice(body);
 
-      const buffer: Uint8Array = await generatePDF(template, width, {
+      const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
       });
@@ -80,7 +80,7 @@ export class SaleController {
 
       const data = this.saleService.pdfAccountReceivable();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         template,
         width,
         this.saleService.pdfAccountReceivable(),
@@ -102,7 +102,7 @@ export class SaleController {
 
       const data = this.saleService.pdfReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'sale/reports/a4.ejs',
         width,
         data,

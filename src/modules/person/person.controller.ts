@@ -29,7 +29,7 @@ export class PersonController {
 
       const data = this.personService.pdfCustomerReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'person/customer/reports/a4.ejs',
         width,
         data,
@@ -51,7 +51,7 @@ export class PersonController {
 
       const data = this.personService.pdfSupplierReport();
 
-      const buffer: Uint8Array = await generatePDF(
+      const buffer: Buffer = await generatePDF(
         'person/supplier/reports/a4.ejs',
         width,
         data,
