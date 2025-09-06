@@ -26,7 +26,7 @@ import { runWorker } from 'src/helper/worker.helper';
 @ApiTags('Product')
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
@@ -101,14 +101,16 @@ export class ProductController {
 
       const workerPath = path.join(__dirname, '..', '..', 'workers', 'pdf.worker.js');
 
-      const buffer: Buffer = await runWorker<Buffer>(workerPath, {
-      template,
-      width,
-      data,
-      isFooter: false,
-    });
+      const response: Buffer = await runWorker<Buffer>(workerPath, {
+        template,
+        width,
+        data,
+        isFooter: false,
+        pdf_key: body.catalog.pdf_key,
+      });
 
-      sendPdfResponse(res, buffer, data.title);
+      // sendPdfResponse(res, buffer, data.title);
+      res.json(response);
     } catch (error) {
       console.log(error);
       throw new HttpException(

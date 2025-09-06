@@ -9,7 +9,7 @@ export function runWorker<T>(workerPath: string, data: any): Promise<T> {
 
     worker.on('message', (msg) => {
       if (msg.success) {
-        resolve(msg.buffer);
+        resolve(msg as T);
       } else {
         reject(new Error(msg.error));
       }
