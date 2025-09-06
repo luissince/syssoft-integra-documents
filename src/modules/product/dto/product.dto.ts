@@ -10,4 +10,5 @@ export class ProductDto {
   catalog: Catalog;
   moneda: Currency;
   products: Product[];
+  webhook: string;
 }
