@@ -6,14 +6,13 @@ import {
   Req,
   Post,
   Body,
-  Get,
+  Inject,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
 import { generatePDF } from 'src/helper/pdf.helper';
 import { Request, Response } from 'express';
 import { Workbook } from 'exceljs';
-import { ProductDto } from './dto/product.dto';
 import { formatDecimal } from 'src/helper/utils.helper';
 import { CodBarDto } from './dto/codbar.dto';
 import { SizePrint } from 'src/common/enums/size.enum';
@@ -21,15 +20,14 @@ import {
   sendExcelResponse,
   sendPdfResponse,
 } from 'src/handlers/pdf-response.handler';
-import * as path from 'path';
-import { runWorker } from 'src/helper/worker.helper';
-import axios from 'axios';
 import { getSignedUrlFromS3 } from 'src/helper/s3.helper';
 
 @ApiTags('Product')
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) { }
+  constructor(
+    private readonly productService: ProductService,
+  ) { }
 
   @Post('pdf/reports')
   async pdfReport(@Req() req: Request, @Res() res: Response) {
@@ -106,50 +104,6 @@ export class ProductController {
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    }
-  }
-
-  @Post('pdf/catalog/process')
-  async pdfCatalogProcess(@Res() res: Response, @Body() body: ProductDto) {
-    try {
-      const width = SizePrint.A4;
-      const template = 'product/catalog/a4.ejs';
-
-      const data = this.productService.pdfCatalog(body);
-
-      const workerPath = path.join(__dirname, '..', '..', 'workers', 'pdf.worker.js');
-
-      // esperar al worker (porque necesitas la key generada)
-      const key: Buffer = await runWorker<Buffer>(workerPath, {
-        template,
-        width,
-        data,
-        isFooter: false,
-      });
-
-      // responder rápido al cliente
-      res.json({ success: true, message: "PDF en proceso" });
-
-      // webhook en background SIN bloquear la respuesta
-      axios.post(body.webhook, {
-        key,
-        status: 'LISTO',
-        idCatalogo: body.catalog.idCatalogo,
-      }).catch(err => {
-        console.error("❌ Error enviando webhook:", err.message);
-      });
-
-      // sendPdfResponse(res, buffer, data.title);
-    } catch (error) {
-      console.log(error);
-      // webhook en background SIN bloquear la respuesta
-      axios.post(body.webhook, {
-        key: null,
-        status: 'ERROR',
-        idCatalogo: body.catalog.idCatalogo,
-      }).catch(err => {
-        console.error("❌ Error enviando webhook:", err.message);
-      });
     }
   }
 
