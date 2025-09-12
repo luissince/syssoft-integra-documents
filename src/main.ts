@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import configureCors from './config/cors.config';
 import staticConfig from './config/static.config';
 import swaggerConfig from './config/swagger.config';
 import * as bodyParser from 'body-parser';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 /**
  * Función principal de la aplicación
