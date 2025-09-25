@@ -79,6 +79,7 @@ export const generatePDF = async (
     page = await context.newPage();
 
     let pdfOptions: any;
+    let screenshotOptions: any = {};
 
     const stopSetContent = startTimer("page.setContent");
     await page.setContent(htmlMainContent, {
@@ -102,6 +103,16 @@ export const generatePDF = async (
         printBackground: true,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
       };
+
+      if (outputType !== 'pdf') {
+        const a4WidthPx = 794; // A4 width en pixels (72 DPI)
+        const a4HeightPx = 1123; // A4 height en pixels (72 DPI)
+        await page.setViewportSize({ width: a4WidthPx, height: a4HeightPx });
+        screenshotOptions = {
+          type: outputType,
+          fullPage: true
+        };
+      }
     } else {
       const stopMeasure = startTimer("measureHeight");
       const widthMm = Number(width.replace('mm', ''));
@@ -116,6 +127,14 @@ export const generatePDF = async (
         printBackground: true,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
       };
+      
+      if (outputType !== 'pdf') {
+        await page.setViewportSize({ width: widthPx, height: heightPx });
+        screenshotOptions = {
+          type: outputType,
+          fullPage: true
+        };
+      }
     }
 
     const stopPdf = startTimer("page.pdf");
@@ -123,7 +142,7 @@ export const generatePDF = async (
     if (outputType === 'pdf') {
       buffer = await page.pdf(pdfOptions);
     } else {
-      buffer = await page.screenshot({ ...pdfOptions, type: outputType });
+      buffer = await page.screenshot(screenshotOptions);
     }
     stopPdf();
 
