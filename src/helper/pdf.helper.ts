@@ -7,7 +7,6 @@ import { SizePrint } from 'src/common/enums/size.enum';
 import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
 import { getBrowserContext } from 'src/handlers/pdf.handler';
 import { Page } from 'playwright';
-import { buffer } from 'stream/consumers';
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -105,12 +104,15 @@ export const generatePDF = async (
       };
 
       if (outputType !== 'pdf') {
-        const a4WidthPx = 794; // A4 width en pixels (72 DPI)
-        const a4HeightPx = 1123; // A4 height en pixels (72 DPI)
+        const a4WidthPx = 2480; // A4 width en pixels (300 DPI para alta calidad)
+        const a4HeightPx = 3508; // A4 height en pixels (300 DPI para alta calidad)
         await page.setViewportSize({ width: a4WidthPx, height: a4HeightPx });
         screenshotOptions = {
           type: outputType,
-          fullPage: true
+          fullPage: true,
+          scale: 'device', // Usar escala de dispositivo para mejor resolución
+          quality: outputType === 'jpeg' ? 95 : undefined, // Alta calidad para JPEG
+          omitBackground: false // Incluir fondo para mejor apariencia
         };
       }
     } else {
@@ -127,12 +129,15 @@ export const generatePDF = async (
         printBackground: true,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
       };
-      
+
       if (outputType !== 'pdf') {
         await page.setViewportSize({ width: widthPx, height: heightPx });
         screenshotOptions = {
           type: outputType,
-          fullPage: true
+          fullPage: true,
+          scale: 'device', // Usar escala de dispositivo para mejor resolución
+          quality: outputType === 'jpeg' ? 95 : undefined, // Alta calidad para JPEG
+          omitBackground: false // Incluir fondo para mejor apariencia
         };
       }
     }
