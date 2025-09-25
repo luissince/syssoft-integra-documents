@@ -47,9 +47,12 @@ export class SaleController {
       const buffer: Buffer = await generatePDF(template, width, {
         data,
         formatDecimal,
-      });
+      },
+      false,
+      body.outputType
+    );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse(res, buffer, data.title, body.outputType);
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

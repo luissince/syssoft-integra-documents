@@ -10,4 +10,5 @@ export class InvoicesSaleDto {
   branch: Branch;
   sale: Sale;
   banks: Bank[];
+  outputType: 'pdf' | 'jpeg' = 'pdf';
 }

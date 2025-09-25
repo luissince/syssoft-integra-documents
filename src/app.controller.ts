@@ -49,6 +49,7 @@ export class AppController {
         width: width,
         height: height,
         margin: body.margin,
+        outputType: 'pdf',
       };
 
       const buffer: Buffer = await generatePDFFromHTML(params);
@@ -302,6 +303,7 @@ export class AppController {
       const params: PdfOptions = {
         htmlContent: template,
         width: width,
+        outputType: 'pdf'
       };
 
       const buffer: Buffer = await generatePDFFromHTML(params);

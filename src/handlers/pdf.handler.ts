@@ -26,6 +26,7 @@ export async function getBrowserContext(): Promise<BrowserContext> {
   if (!context) {
     console.log('🔧 Creando contexto de navegador...');
     context = await browser.newContext({
+      javaScriptEnabled: false,
       viewport: { width: 1200, height: 800 },
       deviceScaleFactor: 1,
       isMobile: false,
