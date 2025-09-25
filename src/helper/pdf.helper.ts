@@ -7,6 +7,7 @@ import { SizePrint } from 'src/common/enums/size.enum';
 import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
 import { getBrowserContext } from 'src/handlers/pdf.handler';
 import { Page } from 'playwright';
+import { buffer } from 'stream/consumers';
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -51,6 +52,7 @@ export const generatePDF = async (
   width: string,
   data: ejs.Data,
   isFooter: boolean = true,
+  outputType: 'pdf' | 'jpeg' = 'pdf',
 ): Promise<Buffer> => {
   let page: Page | null = null;
 
@@ -117,7 +119,12 @@ export const generatePDF = async (
     }
 
     const stopPdf = startTimer("page.pdf");
-    const buffer = await page.pdf(pdfOptions);
+    let buffer = null;
+    if (outputType === 'pdf') {
+      buffer = await page.pdf(pdfOptions);
+    } else {
+      buffer = await page.screenshot({ type: outputType });
+    }
     stopPdf();
 
     stopAll();
@@ -140,6 +147,7 @@ export const generatePDFFromHTML = async ({
   width,
   height,
   margin = { top: 0, bottom: 0, left: 0, right: 0 },
+  outputType,
 }: PdfOptions): Promise<Buffer> => {
   let page: Page | null = null;
 
@@ -193,7 +201,13 @@ export const generatePDFFromHTML = async ({
       pdfOptions.height = `${heightMm}mm`;
     }
 
-    const buffer = await page.pdf(pdfOptions);
+    let buffer = null;
+    if (outputType === 'pdf') {
+      buffer = await page.pdf(pdfOptions);
+    } else {
+      buffer = await page.screenshot({ type: outputType });
+    }
+
     await page.close();
 
     return buffer;

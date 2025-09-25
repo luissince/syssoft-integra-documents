@@ -5,25 +5,41 @@ import { Response } from 'express';
  * @param res The Express response object
  * @param buffer The PDF buffer
  * @param fileName The file name (without extension)
+ *  @param type Output type: 'pdf' | 'png' | 'jpeg'
  */
 export function sendPdfResponse(
   res: Response,
   buffer: Buffer,
   fileName: string,
+  type: 'pdf' | 'jpeg' = 'pdf',
 ): void {
   // Encode the filename for URL compatibility
   const encodedFileName = encodeURIComponent(fileName);
 
+  let contentType: string;
+  let extension: string;
+
+  switch (type) {
+    case 'jpeg':
+      contentType = 'image/jpeg';
+      extension = 'jpg';
+      break;
+    default:
+      contentType = 'application/pdf';
+      extension = 'pdf';
+      break;
+  }
+
   // Set response headers
-  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Type', contentType);
   res.setHeader('Content-Length', buffer.byteLength);
 
   // Use "filename*" format to support special characters (RFC 5987)
   res.setHeader(
     'Content-Disposition',
-    `inline; filename="${encodedFileName}.pdf"; filename*=UTF-8''${encodedFileName}.pdf`,
+    `inline; filename="${encodedFileName}.${extension}"; filename*=UTF-8''${encodedFileName}.${extension}`,
   );
-
+  
   // Send the PDF file
   res.end(buffer);
 }
