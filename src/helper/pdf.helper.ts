@@ -123,7 +123,7 @@ export const generatePDF = async (
     if (outputType === 'pdf') {
       buffer = await page.pdf(pdfOptions);
     } else {
-      buffer = await page.screenshot({ type: outputType });
+      buffer = await page.screenshot({ ...pdfOptions, type: outputType });
     }
     stopPdf();
 
@@ -205,7 +205,7 @@ export const generatePDFFromHTML = async ({
     if (outputType === 'pdf') {
       buffer = await page.pdf(pdfOptions);
     } else {
-      buffer = await page.screenshot({ type: outputType });
+      buffer = await page.screenshot({ ...pdfOptions, type: outputType });
     }
 
     await page.close();
