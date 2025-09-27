@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     --no-install-recommends \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -43,13 +43,13 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     --no-install-recommends \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Instala Playwright y los navegadores necesarios
-RUN npx playwright@1.47.2 install --with-deps chromium
+RUN npx playwright@1.51.0 install --with-deps chromium
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
