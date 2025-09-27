@@ -5,13 +5,13 @@ import { Response } from 'express';
  * @param res The Express response object
  * @param buffer The PDF buffer
  * @param fileName The file name (without extension)
- *  @param type Output type: 'pdf' | 'png' | 'jpeg'
+ *  @param type Output type: 'pdf' | 'jpeg' | 'png' | 'jpg'
  */
 export function sendPdfResponse(
   res: Response,
   buffer: Buffer,
   fileName: string,
-  type: 'pdf' | 'jpeg' = 'pdf',
+  type: 'pdf' | 'jpeg' | 'png' | 'jpg' = 'pdf',
 ): void {
   // Encode the filename for URL compatibility
   const encodedFileName = encodeURIComponent(fileName);
@@ -21,6 +21,14 @@ export function sendPdfResponse(
 
   switch (type) {
     case 'jpeg':
+      contentType = 'image/jpeg';
+      extension = 'jpg';
+      break;
+    case 'png':
+      contentType = 'image/png';
+      extension = 'png';
+      break;
+    case 'jpg':
       contentType = 'image/jpeg';
       extension = 'jpg';
       break;
