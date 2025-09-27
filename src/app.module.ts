@@ -14,6 +14,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { ProductModule } from './modules/product/product.module';
 import { PersonModule } from './modules/person/person.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
+import { PdfBrowserProvider } from './handlers/pdf-browser.provider';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.mod
     PersonModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PdfBrowserProvider],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

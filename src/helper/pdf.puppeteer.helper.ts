@@ -3,8 +3,8 @@ import { readFile } from 'fs/promises';
 import * as path from 'path';
 import * as ejs from 'ejs';
 import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
-import { withNewPage } from 'src/handlers/pdf.playwright.handler';
-import { Page } from 'playwright';
+import { withNewPage } from 'src/handlers/pdf.puppeteer.handler'; // Cambiado el import
+import { Page } from 'puppeteer'; // Cambiado de playwright a puppeteer
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -17,18 +17,20 @@ async function loadTemplate(filePath: string): Promise<string> {
   return templateCache.get(filePath);
 }
 
-// Medir altura usando Playwright (por ahora, lo mejoraremos después)
+// Medir altura usando Puppeteer
 async function measureHeight(
   htmlContent: string,
   width: number,
 ): Promise<number> {
   return await withNewPage(async (page) => {
-    await page.setViewportSize({ width, height: 10 });
+    await page.setViewport({ width, height: 10 }); // Cambiado de setViewportSize a setViewport
     await page.setContent(htmlContent, {
-      waitUntil: 'networkidle',
+      waitUntil: 'networkidle0', // Cambiado de 'networkidle' a 'networkidle0'
       timeout: 30000,
     });
-    await page.waitForFunction(() => document.fonts.ready, { timeout: 30000 });
+    
+    // Esperar a que las fuentes estén listas
+    await page.evaluate(() => document.fonts.ready);
 
     const body = await page.$('body');
     const boundingBox = await body?.boundingBox();
@@ -65,15 +67,14 @@ export const generatePDF = async (
 
     const stopSetContent = startTimer('page.setContent');
     await page.setContent(htmlMainContent, {
-      waitUntil: 'networkidle',
+      waitUntil: 'networkidle0', // Cambiado de 'networkidle' a 'networkidle0'
       timeout: 60000, // extendemos timeout para catálogos grandes
     });
     stopSetContent();
 
     const stopFonts = startTimer('waitForFonts');
-    await page.waitForFunction(() => document.fonts.ready, {
-      timeout: 60000,
-    });
+    // Cambiado el método para esperar las fuentes
+    await page.evaluate(() => document.fonts.ready);
     stopFonts();
 
     let pdfOptions: any;
@@ -92,12 +93,12 @@ export const generatePDF = async (
       if (outputType !== 'pdf') {
         const a4WidthPx = 2480; // A4 width en pixels (300 DPI para alta calidad)
         const a4HeightPx = 3508; // A4 height en pixels (300 DPI para alta calidad)
-        await page.setViewportSize({ width: a4WidthPx, height: a4HeightPx });
+        await page.setViewport({ width: a4WidthPx, height: a4HeightPx }); // Cambiado de setViewportSize
         screenshotOptions = {
           type: outputType,
           fullPage: true,
-          scale: 'device', // Usar escala de dispositivo para mejor resolución
-          quality: outputType === 'jpeg' ? 95 : undefined, // Alta calidad para JPEG
+          // Puppeteer no tiene 'scale' como opción, se usa clip o calidad
+          ...(outputType === 'jpeg' && { quality: 95 }), // Alta calidad para JPEG
           omitBackground: false // Incluir fondo para mejor apariencia
         };
       }
@@ -117,12 +118,11 @@ export const generatePDF = async (
       };
 
       if (outputType !== 'pdf') {
-        await page.setViewportSize({ width: widthPx, height: heightPx });
+        await page.setViewport({ width: widthPx, height: heightPx }); // Cambiado de setViewportSize
         screenshotOptions = {
           type: outputType,
           fullPage: true,
-          scale: 'device', // Usar escala de dispositivo para mejor resolución
-          quality: outputType === 'jpeg' ? 95 : undefined, // Alta calidad para JPEG
+          ...(outputType === 'jpeg' && { quality: 95 }), // Alta calidad para JPEG
           omitBackground: false // Incluir fondo para mejor apariencia
         };
       }
@@ -130,13 +130,17 @@ export const generatePDF = async (
 
     const stopPdf = startTimer('page.pdf');
     if (outputType === 'pdf') {
-      const buffer = await page.pdf(pdfOptions);
+      const pdfBuffer = await page.pdf(pdfOptions);
       stopPdf();
-      return buffer;
+      stopAll();
+      // Asegurar que retornamos un Buffer
+      return Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
     } else {
-      const buffer = await page.screenshot(screenshotOptions);
+      const screenshotBuffer = await page.screenshot(screenshotOptions);
       stopPdf();
-      return buffer;
+      stopAll();
+      // Asegurar que retornamos un Buffer
+      return Buffer.isBuffer(screenshotBuffer) ? screenshotBuffer : Buffer.from(screenshotBuffer);
     }
   });
 };
