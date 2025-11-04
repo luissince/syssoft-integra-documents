@@ -5,164 +5,270 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="<%= data.style %>">
-  <title><%= data.title %></title>
+  <title>
+    <%= data.title %>
+  </title>
 </head>
+
 <body>
   <main class="pl-20 pr-20">
-    <div class="flex justify-content-between pb-10">   
-      <div>
-        <img  
-        src="<%= data.company.rutaLogo ?? data.icon %>"
-        width="100" 
-        height="100"
-        />
-      </div>
-      
-      <div class="w-40p text-center">
-        <h3><%= data.company.nombreEmpresa %></h3>
-          <p><%= data.branch.direccion %> </p>
-          <p><%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %></p>
-          <p><%= data.branch.telefono %> | <%= data.branch.celular %></p>
-          <p><%= data.branch.paginaWeb %> | <%= data.branch.email %>m</p>
-      </div>
-  
-      <div class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10">
-        <h3>RUC: <%= data.company.documento %></h3>
-        <p><%= data.sale.comprobante.nombre %></p>
-        <p><%= data.sale.comprobante.serie %>-<%= data.sale.comprobante.numeracion %></p>
-      </div>
-    </div>
-  
     <div class="flex justify-content-between pt-10 pb-10">
-      <div class="w-50p">
-        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.sale.cliente.documento %></p>
-        <p><span class="font-weight-bold">CLIENTE:</span> <%= data.sale.cliente.informacion %></p>
-        <p><span class="font-weight-bold">DIRECCION:</span> <%= data.sale.cliente.direccion %></p>
+      <div>
+        <img src="<%= data.company.rutaLogo ?? data.icon %>" width="100" height="100" />
       </div>
-  
-      <div class="w-50p">
-          <p><span class="font-weight-bold">FECHA EMISION:</span> <%= data.sale.fecha %> <%= data.sale.hora %></p>
-          <p><span class="font-weight-bold">MONEDA:</span> <%= data.sale.moneda.nombre %>  - <%= data.sale.moneda.codiso %></p>
-          <p><span class="font-weight-bold">FORMA DE PAGO:</span> <%= data.sale.formaPago.nombre %></p>
+
+      <div class="w-40p text-center flex flex-column justify-content-center align-items-center gap-4">
+        <h3>
+          <%= data.company.nombreEmpresa %>
+        </h3>
+        <p>
+          <%= data.branch.direccion %>
+        </p>
+        <p>
+          <%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito
+                %>
+        </p>
+        <p>
+          <%= data.branch.telefono %> | <%= data.branch.celular %>
+        </p>
+        <p>
+          <%= data.branch.paginaWeb %> | <%= data.branch.email %>m
+        </p>
+      </div>
+
+      <div
+        class="text-center border-1 border-solid flex flex-column justify-content-center pl-20 pr-20 pt-10 pb-10 gap-4">
+        <h3>RUC: <%= data.company.documento %>
+        </h3>
+        <p>
+          <%= data.sale.comprobante.nombre %>
+        </p>
+        <p>
+          <%= data.sale.comprobante.serie %>-<%= data.sale.comprobante.numeracion %>
+        </p>
       </div>
     </div>
-  
+
+    <div class="flex justify-content-between pt-10 pb-10">
+      <div class="w-50p flex flex-column gap-4">
+        <p><span class="font-weight-bold">RUC / DNI:</span>
+          <%= data.sale.cliente.documento %>
+        </p>
+        <p><span class="font-weight-bold">CLIENTE:</span>
+          <%= data.sale.cliente.informacion %>
+        </p>
+        <p><span class="font-weight-bold">DIRECCION:</span>
+          <%= data.sale.cliente.direccion %>
+        </p>
+      </div>
+
+      <div class="w-50p flex flex-column gap-4">
+        <p><span class="font-weight-bold">FECHA EMISION:</span>
+          <%= data.sale.fecha %>
+            <%= data.sale.hora %>
+        </p>
+        <p><span class="font-weight-bold">MONEDA:</span>
+          <%= data.sale.moneda.nombre %> - <%= data.sale.moneda.codiso %>
+        </p>
+        <p><span class="font-weight-bold">FORMA DE PAGO:</span>
+          <%= data.sale.formaPago.nombre %>
+        </p>
+      </div>
+    </div>
+
     <div class="pt-10 pb-10">
       <table class="table w-full">
         <thead>
           <tr>
-            <th width="5%"><p>Ítem</p></th>
-            <th width="10%"><p>Cantidad</p></th>
-            <th width="10%"><p>Unid/Med</p></th>
-            <th width="55%"><p>Descripción</p></th>
-            <th width="10%"><p>Precio</p></th>
-            <th width="10%"><p>Importe</p></th>
+            <th width="5%">
+              <p>Ítem</p>
+            </th>
+            <th width="10%">
+              <p>Cantidad</p>
+            </th>
+            <th width="10%">
+              <p>Unid/Med</p>
+            </th>
+            <th width="55%">
+              <p>Descripción</p>
+            </th>
+            <th width="10%">
+              <p>Precio</p>
+            </th>
+            <th width="10%">
+              <p>Importe</p>
+            </th>
           </tr>
         </thead>
         <tbody>
           <% for (const item of data.sale.ventaDetalles) { %>
-          <tr>
-            <td class="text-center"><p><%= item.id %></p></td>
-            <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
-            <td class="text-center"><p><%= item.producto.medida.nombre %></p></td>
-            <td class="text-left">
-              <p>
-                <%= item.producto.codigo %>
-                <br/>
-                <%= item.producto.nombre %>
-              </p>
-            </td>
-            <td class="text-right"><p><%= formatDecimal(item.precio) %></p></td>
-            <td class="text-right"><p><%= formatDecimal(item.precio * item.cantidad) %></p></td>
-          </tr>
-        <% } %>
+            <tr>
+              <td class="text-center">
+                <p>
+                  <%= item.id %>
+                </p>
+              </td>
+              <td class="text-center">
+                <p>
+                  <%= formatDecimal(item.cantidad) %>
+                </p>
+              </td>
+              <td class="text-center">
+                <p>
+                  <%= item.producto.medida.nombre %>
+                </p>
+              </td>
+              <td class="text-left">
+                <p>
+                  <%= item.producto.codigo %>
+                    <br />
+                    <%= item.producto.nombre %>
+                </p>
+              </td>
+              <td class="text-right">
+                <p>
+                  <%= formatDecimal(item.precio) %>
+                </p>
+              </td>
+              <td class="text-right">
+                <p>
+                  <%= formatDecimal(item.precio * item.cantidad) %>
+                </p>
+              </td>
+            </tr>
+            <% } %>
         </tbody>
       </table>
     </div>
-  
+
     <div class="flex justify-content-between align-items-center pt-10 pb-10">
       <div class="w-50p">
         <h3 class="mb-5">MONTO EN LETRAS</h3>
-        <p>SON: <%= data.importLetras %></p>
+        <p>SON: <%= data.importLetras %>
+        </p>
       </div>
-  
+
       <div class="w-30p">
         <table class="table w-full">
           <tbody>
             <tr>
-              <td><p>SUB TOTAL:</p></td>
-              <td class="text-right"><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+              <td>
+                <p>SUB TOTAL:</p>
+              </td>
+              <td class="text-right">
+                <p>
+                  <%= data.sale.moneda.simbolo %>
+                    <%= formatDecimal(data.subTotal) %>
+                </p>
+              </td>
             </tr>
             <tr>
               <% for (const item of data.impuestos) { %>
-                <tr>
-                  <td><p><%= item.nombre %>:</p></td>
-                  <td class="text-right"><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
-                </tr>
-              <% } %>
-            </tr>
             <tr>
-              <th class="text-left"><p>TOTAL:</p></th>
-              <th class="text-right"><p><%= data.sale.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+              <td>
+                <p>
+                  <%= item.nombre %>:
+                </p>
+              </td>
+              <td class="text-right">
+                <p>
+                  <%= data.sale.moneda.simbolo %>
+                    <%= formatDecimal(item.monto) %>
+                </p>
+              </td>
             </tr>
+            <% } %>
+              </tr>
+              <tr>
+                <th class="text-left">
+                  <p>TOTAL:</p>
+                </th>
+                <th class="text-right">
+                  <p>
+                    <%= data.sale.moneda.simbolo %>
+                      <%= formatDecimal(data.total) %>
+                  </p>
+                </th>
+              </tr>
           </tbody>
         </table>
       </div>
     </div>
-  
+
     <% if (data.sale.nota) { %>
       <div class="pt-10 pb-10">
         <h3 class="mb-5">NOTA:</h3>
-        <p>* <%= data.sale.nota %></p>
+        <p>* <%= data.sale.nota %>
+        </p>
       </div>
-    <% } %>  
-
-    <% if (data.banks.length > 0) { %>
-      <div class="pt-10 pb-10">
-        <h3 class="mb-5">Cuentas Bancarias</h3>
-        <table class="table w-full">
-          <thead>
-            <tr>
-              <th class="text-left"><p>BANCO</p></th>
-              <th class="text-left"><p>CUENTA</p></th>
-              <th class="text-left"><p>CCI</p></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (const item of data.banks) { %>
-              <tr>
-                <td><p><%= item.nombre %></p></td>
-                <td><p><%= item.numCuenta %></p></td>
-                <td><p><%= item.cci %></p></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-    <% } %>
-
-    <div class="flex flex-row justify-content-start align-items-center">
-      <% if (data.sale.comprobante.facturado) { %>
-      <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
       <% } %>
-      
-      <div>
-        <% if (data.sale.comprobante.facturado) { %>
-          <p class="font-weight-bold">           
-              Representación Impresa del comprobante Electrónico.
-          </p>
-          <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
-            www.consultas-sunat.com
-          </a>
-        <% } %>
-        <% if (data.company.tipoEnvio === 0) { %>
-          <p class="text-danger font-weight-bold">           
-              Documento no valido
-          </p>
-        <% } %>
-        <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %></p>
-      </div>
-  </div>
+
+        <% if (data.banks.length> 0) { %>
+          <div class="pt-10 pb-10">
+            <h3 class="mb-5">Cuentas Bancarias</h3>
+            <table class="table w-full">
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    <p>BANCO</p>
+                  </th>
+                  <th class="text-left">
+                    <p>CUENTA</p>
+                  </th>
+                  <th class="text-left">
+                    <p>CCI</p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (const item of data.banks) { %>
+                  <tr>
+                    <td>
+                      <p>
+                        <%= item.nombre %>
+                      </p>
+                    </td>
+                    <td>
+                      <p>
+                        <%= item.numCuenta %>
+                      </p>
+                    </td>
+                    <td>
+                      <p>
+                        <%= item.cci %>
+                      </p>
+                    </td>
+                  </tr>
+                  <% } %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+
+            <div class="flex flex-row justify-content-start align-items-center">
+              <% if (data.sale.comprobante.facturado) { %>
+                <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
+                <% } %>
+
+                  <div>
+                    <% if (data.sale.comprobante.facturado) { %>
+                      <p class="font-weight-bold">
+                        Representación Impresa del comprobante Electrónico.
+                      </p>
+                      <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+                        www.consultas-sunat.com
+                      </a>
+                      <% } %>
+                        <% if (data.company.tipoEnvio===0) { %>
+                          <p class="text-danger font-weight-bold">
+                            Documento no valido
+                          </p>
+                          <% } %>
+                            <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %>
+                            </p>
+                  </div>
+            </div>
   </main>
 </body>
+
 </html>

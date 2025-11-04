@@ -8,7 +8,7 @@
   </head>
   <body>
     <main class="pl-20 pr-20">
-      <div class="flex justify-content-between pb-10">   
+      <div class="flex justify-content-between pt-10 pb-10">   
         <div>
           <img  
           src="<%= data.company.rutaLogo ?? data.icon %>"
@@ -18,7 +18,7 @@
         </div>
         
         <div class="w-40p text-center">
-          <h3><%= data.company.nombreEmpresa %></h3>
+            <h3><%= data.company.nombreEmpresa %></h3>
             <p><%= data.branch.direccion %> </p>
             <p><%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %></p>
             <p><%= data.branch.telefono %> | <%= data.branch.celular %></p>
