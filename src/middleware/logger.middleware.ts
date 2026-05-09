@@ -10,7 +10,8 @@ export class LoggerMiddleware implements NestMiddleware {
       console.log('Método:', method);
       console.log('URL:', url);
       console.log('Encabezados:', headers);
-      console.log('Cuerpo de la solicitud:', body);
+      console.log('Cuerpo de la solicitud:');
+      console.dir(body, { depth: null });
       console.log('');
     }
 

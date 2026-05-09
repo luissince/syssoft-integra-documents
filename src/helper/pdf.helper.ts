@@ -5,6 +5,8 @@ import * as ejs from 'ejs';
 import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
 import { withNewPage } from 'src/handlers/pdf.playwright.handler';
 import { Page } from 'playwright';
+import PdfDto from 'src/common/class/dto/pdf.class.dto';
+import { SizePaper, SizePrint } from 'src/common/enums/size.enum';
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -28,7 +30,7 @@ async function measureHeight(
       waitUntil: 'networkidle',
       timeout: 30000,
     });
-    await page.waitForFunction(() => document.fonts.ready, { timeout: 30000 });
+    await page.waitForFunction(() => document.fonts.ready, { timeout: 60000 });
 
     const body = await page.$('body');
     const boundingBox = await body?.boundingBox();
@@ -76,11 +78,11 @@ export const generatePDF = async (
     });
     stopFonts();
 
-    let pdfOptions: any;
+    let options: any;
     let screenshotOptions: any = {};
 
     if (width === 'A4') {
-      pdfOptions = {
+      options = {
         displayHeaderFooter: true,
         headerTemplate: templateHeader,
         footerTemplate: isFooter ? templateFooter : '',
@@ -109,7 +111,7 @@ export const generatePDF = async (
       const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
       stopMeasure();
 
-      pdfOptions = {
+      options = {
         width: `${widthMm}mm`,
         height: `${heightMm}mm`,
         printBackground: true,
@@ -130,7 +132,7 @@ export const generatePDF = async (
 
     const stopPdf = startTimer('page.pdf');
     if (outputType === 'pdf') {
-      const buffer = await page.pdf(pdfOptions);
+      const buffer = await page.pdf(options);
       stopPdf();
       return buffer;
     } else {
@@ -138,5 +140,81 @@ export const generatePDF = async (
       stopPdf();
       return buffer;
     }
+  });
+};
+
+/**
+ * Generates a PDF from a URL
+ * @param url The URL to convert to PDF
+ * @param options PDF generation options
+ * @returns Promise with PDF buffer
+ */
+export const generatePDFFromHTML = async ({
+  title,
+  html,
+  size,
+  margin,
+  outputType,
+}: PdfDto): Promise<Buffer> => {
+  return await withNewPage(async (page: Page) => {
+    // Set page options
+    await page.setContent(html, {
+      waitUntil: 'networkidle',
+      timeout: 60000,
+    });
+
+    // Wait for fonts to be loaded
+    await page.waitForFunction(() => document.fonts.ready, {
+      timeout: 60000,
+    });
+
+    // Set viewport size
+    let options: any;
+    let screenshotOptions: any;
+
+    // If size is not provided, use A4 as default
+    if (size === SizePaper.A4) {
+      options = {
+        displayHeaderFooter: true,
+        format: 'A4',
+        printBackground: true,
+        margin: margin,
+      }
+    }
+
+    // If size is provided, use it
+    if (size === SizePaper.mm80 || size === SizePaper.mm58) {
+      const width = size === SizePaper.mm80 ? SizePrint.mm72 : SizePrint.mm48;
+      const widthMm = Number(width.replace('mm', ''));
+      const widthPx = Math.round(millimetersToPixels(widthMm));
+      const heightPx = await measureHeight(html, widthPx);
+      const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
+
+      options = {
+        width: `${widthMm}mm`,
+        height: `${heightMm}mm`,
+        printBackground: true,
+        margin: margin,
+      }
+
+      await page.setViewportSize({ width: widthPx, height: heightPx });
+    }
+
+    // Return PDF buffer
+    if (outputType === 'pdf') {
+      return await page.pdf(options);
+    }
+
+    // Adjust screenshot options for non-PDF outputs
+    screenshotOptions = {
+      type: outputType,
+      fullPage: true,
+      scale: 'device', // Usar escala de dispositivo para mejor resolución
+      quality: outputType === 'jpeg' ? 95 : undefined, // Alta calidad para JPEG
+      omitBackground: false // Incluir fondo para mejor apariencia
+    }
+
+    // Return screenshot buffer
+    return await page.screenshot(screenshotOptions);
   });
 };

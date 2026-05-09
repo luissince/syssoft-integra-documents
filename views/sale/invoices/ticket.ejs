@@ -33,7 +33,13 @@
         <p><span class="font-weight-bold">Cliente:</span> <%= data.sale.cliente.informacion %></p>
         <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.sale.cliente.documento %></p>
         <p><span class="font-weight-bold">Dirección:</span> <%= data.sale.cliente.direccion %></p>
-        <p><span class="font-weight-bold">Forma de Pago:</span> <%= data.sale.formaPago.nombre %></p>
+        <p>
+          <span class="font-weight-bold">Forma de Pago:</span> 
+          <%= data.sale.formaPago.nombre %>
+          <% if (data.sale.plazo !== null) { %>
+              (<%= data.sale.plazo.nombre %>)
+            <% } %>
+        </p>
         <% if (data.sale.nota) { %>
           <p><span class="font-weight-bold">Nota: </span> * <%= data.sale.nota %></p>
         <% } %>      
@@ -99,7 +105,7 @@
   
       <footer class="pt-5">    
         <div class="text-center mb-5">
-          <p>Vendedor: <%= data.sale.usuario.nombres %>, <%= data.sale.usuario.apellidos %></p>
+          <p>Vendedor: <%= data.sale.usuario.persona.informacion %></p>
         </div>
   
         <div class="text-center">

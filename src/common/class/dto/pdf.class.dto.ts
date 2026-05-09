@@ -5,7 +5,6 @@ export default class PdfDto {
   title: string;
   html: string;
   size?: SizePaper;
-  width?: string;
-  height?: string;
   margin?: Margin;
+  outputType: 'pdf' | 'jpeg' | 'png' | 'jpg' = 'pdf';
 }

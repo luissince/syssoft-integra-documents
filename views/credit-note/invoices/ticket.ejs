@@ -24,18 +24,22 @@
       <div class="border-1 border-dashed"></div>
   
       <div class="text-center pt-5 pb-5">
-        <p class="font-weight-bold text-uppercase font-size-13"><%= data.quotation.comprobante.nombre %></p>
-        <p class="font-weight-bold font-size-13"><%= data.quotation.comprobante.serie %>-<%= data.quotation.comprobante.numeracion %></p>
+        <p class="font-weight-bold text-uppercase font-size-13"><%= data.creditNote.comprobante.nombre %></p>
+        <p class="font-weight-bold font-size-13"><%= data.creditNote.comprobante.serie %>-<%= formatNumberWithZeros(data.creditNote.comprobante.numeracion) %></p>
       </div>
   
       <div class="pt-5 pb-5">
-        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.quotation.fecha %> <%= data.quotation.hora %></p>
-        <p><span class="font-weight-bold">Cliente:</span> <%= data.quotation.cliente.informacion %></p>
-        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.quotation.cliente.documento %></p>
-        <p><span class="font-weight-bold">Dirección:</span> <%= data.quotation.cliente.direccion %></p>
-        <% if (data.quotation.nota) { %>
-          <p><span class="font-weight-bold">Nota: </span> * <%= data.quotation.nota %></p>
-        <% } %>      
+        <p><span class="font-weight-bold">Fecha de Emisión: </span> <%= data.creditNote.fecha %> <%= formatTime(data.creditNote.hora) %></p>
+        <p><span class="font-weight-bold">Cliente:</span> <%= data.creditNote.cliente.informacion %></p>
+        <p><span class="font-weight-bold">RUC / DNI:</span> <%= data.creditNote.cliente.documento %></p>
+        <p><span class="font-weight-bold">Dirección:</span> <%= data.creditNote.cliente.direccion %></p>
+        <p>
+          <span class="font-weight-bold">Motivo:</span> 
+          <%= data.creditNote.motivo.nombre %>
+        </p>    
+        <p><span class="font-weight-bold">DOC. RELACIONADO:</span>
+          <%= data.creditNote.venta.comprobante.serie %>-<%= formatNumberWithZeros(data.creditNote.venta.comprobante.numeracion) %>
+        </p>
       </div>
   
       <div class="border-1 border-dashed"></div>
@@ -51,7 +55,7 @@
               </tr>
           </thead>
           <tbody>
-            <% for (const item of data.quotation.cotizacionDetalles) { %>
+            <% for (const item of data.creditNote.notaCreditoDetalles) { %>
               <tr>
                   <td class="text-center"><p><%= formatDecimal(item.cantidad) %></p></td>
                   <td class="text-left"><p><%= item.producto.nombre %></p></td>
@@ -70,19 +74,19 @@
           <tbody>
             <tr>
               <td><p>SUB TOTAL:</p></td>
-              <td class="text-right"><p><p><%= data.quotation.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
+              <td class="text-right"><p><p><%= data.creditNote.moneda.simbolo %> <%= formatDecimal(data.subTotal) %></p></td>
             </tr>
             <tr>
               <% for (const item of data.impuestos) { %>
                 <tr>
                   <td><p><%= item.nombre %>:</p></td>
-                  <td class="text-right"><p><%= data.quotation.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
+                  <td class="text-right"><p><%= data.creditNote.moneda.simbolo %> <%= formatDecimal(item.monto) %></p></td>
                 </tr>
               <% } %>
             </tr>
             <tr>
               <th class="text-left"><p>TOTAL:</p></th>
-              <th class="text-right"><p><%= data.quotation.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
+              <th class="text-right"><p><%= data.creditNote.moneda.simbolo %> <%= formatDecimal(data.total) %></p></th>
             </tr>
           </tbody>
         </table>
@@ -98,17 +102,30 @@
   
       <footer class="pt-5">    
         <div class="text-center mb-5">
-          <p>Vendedor: <%= data.quotation.usuario.persona.informacion %></p>
+          <p>Vendedor: <%= data.creditNote.usuario.persona.informacion %></p>
         </div>
   
-        <div class="text-center mt-2">
+        <div class="text-center">
+          <% if (data.creditNote.comprobante.facturado) { %>
+            <p class="font-weight-bold text-center">           
+                Representación Impresa del comprobante Electrónico.
+            </p>
+            <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
+            <br />
+            <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+              www.consultas-sunat.com
+            </a>
+          <% } %>
+        </div> 
+
+        <div class="text-center mt-2 mb-2">
             <img src="<%= data.icon %>" width="50px" class="m-0">
             <br />
             <a href="https://www.syssoftintegra.com/" class="font-family-pacifico">
               Emitido por: <span class="font-weight-bold">www.syssosftintegra.com</span>
             </a>
-        </div>
-  
+        </div>    
+
         <% if (data.company.tipoEnvio === 0) { %>
           <p class="text-danger font-weight-bold text-center">           
               Documento no valido

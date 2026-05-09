@@ -1,5 +1,6 @@
 import Currency from './currency.model';
 import PaymentMethod from './payment-method.model';
+import PaymentTerms from './payment-terms.model';
 import Person from './person.model';
 import PurchaseDetail from './purchase-detail.model';
 import Receipt from './receipt.model';
@@ -17,10 +18,10 @@ class Purchase {
   private _serie: string;
   private _numeracion: number;
   private _idFormaPago: string;
+  private _idPlazo: string;
+  private _fechaVencimiento: string;
   private _observacion: string;
   private _nota: string;
-  private _numeroCuota: number;
-  private _frecuenciaPago: string;
   private _estado: boolean;
   private _fecha: string;
   private _hora: string;
@@ -29,6 +30,7 @@ class Purchase {
   private _almacen: WareHouse;
   private _moneda: Currency;
   private _formaPago: PaymentMethod;
+  private _plazo: PaymentTerms;
   private _usuario: User;
   private _compraDetalles: PurchaseDetail[];
 
@@ -112,6 +114,22 @@ class Purchase {
     this._idFormaPago = value;
   }
 
+  get idPlazo(): string {
+    return this._idPlazo;
+  }
+
+  set idPlazo(value: string) {
+    this._idPlazo = value;
+  }
+
+  get fechaVencimiento(): string {
+    return this._fechaVencimiento;
+  }
+
+  set fechaVencimiento(value: string) {
+    this._fechaVencimiento = value;
+  }
+
   get observacion(): string {
     return this._observacion;
   }
@@ -126,22 +144,6 @@ class Purchase {
 
   set nota(value: string) {
     this._nota = value;
-  }
-
-  get numeroCuota(): number {
-    return this._numeroCuota;
-  }
-
-  set numeroCuota(value: number) {
-    this._numeroCuota = value;
-  }
-
-  get frecuenciaPago(): string {
-    return this._frecuenciaPago;
-  }
-
-  set frecuenciaPago(value: string) {
-    this._frecuenciaPago = value;
   }
 
   get estado(): boolean {
@@ -206,6 +208,14 @@ class Purchase {
 
   set formaPago(value: PaymentMethod) {
     this._formaPago = value;
+  }
+
+  get plazo(): PaymentTerms {
+    return this._plazo;
+  }
+
+  set plazo(value: PaymentTerms) {
+    this._plazo = value;
   }
 
   get usuario(): User {

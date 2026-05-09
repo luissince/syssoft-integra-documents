@@ -25,8 +25,7 @@
           <%= data.branch.direccion %>
         </p>
         <p>
-          <%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito
-                %>
+          <%= data.branch.ubigeo.departamento %> - <%= data.branch.ubigeo.provincia %> - <%= data.branch.ubigeo.distrito %>
         </p>
         <p>
           <%= data.branch.telefono %> | <%= data.branch.celular %>
@@ -41,10 +40,10 @@
         <h3>RUC: <%= data.company.documento %>
         </h3>
         <p>
-          <%= data.sale.comprobante.nombre %>
+          <%= data.creditNote.comprobante.nombre %>
         </p>
         <p>
-          <%= data.sale.comprobante.serie %>-<%= data.sale.comprobante.numeracion %>
+          <%= data.creditNote.comprobante.serie %>-<%= formatNumberWithZeros(data.creditNote.comprobante.numeracion) %>
         </p>
       </div>
     </div>
@@ -52,31 +51,28 @@
     <div class="flex justify-content-between pt-10 pb-10">
       <div class="w-50p flex flex-column gap-4">
         <p><span class="font-weight-bold">RUC / DNI:</span>
-          <%= data.sale.cliente.documento %>
+          <%= data.creditNote.cliente.documento %>
         </p>
         <p><span class="font-weight-bold">CLIENTE:</span>
-          <%= data.sale.cliente.informacion %>
+          <%= data.creditNote.cliente.informacion %>
         </p>
         <p><span class="font-weight-bold">DIRECCION:</span>
-          <%= data.sale.cliente.direccion %>
+          <%= data.creditNote.cliente.direccion %>
+        </p>
+         <p><span class="font-weight-bold">DOC. RELACIONADO:</span>
+          <%= data.creditNote.venta.comprobante.serie %>-<%= formatNumberWithZeros(data.creditNote.venta.comprobante.numeracion) %>
         </p>
       </div>
 
       <div class="w-50p flex flex-column gap-4">
         <p><span class="font-weight-bold">FECHA EMISION:</span>
-          <%= data.sale.fecha %>
-            <%= data.sale.hora %>
+          <%= data.creditNote.fecha %> <%= formatTime(data.creditNote.hora) %>
         </p>
         <p><span class="font-weight-bold">MONEDA:</span>
-          <%= data.sale.moneda.nombre %> - <%= data.sale.moneda.codiso %>
+          <%= data.creditNote.moneda.nombre %> - <%= data.creditNote.moneda.codiso %>
         </p>
-        <p>
-          <span class="font-weight-bold">FORMA DE PAGO:</span>
-          <%= data.sale.formaPago.nombre %>
-
-          <% if (data.sale.plazo !== null) { %>
-            (<%= data.sale.plazo.nombre %>)
-          <% } %>
+        <p><span class="font-weight-bold">MOTIVO:</span>
+          <%= data.creditNote.motivo.nombre %> 
         </p>
       </div>
     </div>
@@ -106,7 +102,7 @@
           </tr>
         </thead>
         <tbody>
-          <% for (const item of data.sale.ventaDetalles) { %>
+          <% for (const item of data.creditNote.notaCreditoDetalles) { %>
             <tr>
               <td class="text-center">
                 <p>
@@ -162,7 +158,7 @@
               </td>
               <td class="text-right">
                 <p>
-                  <%= data.sale.moneda.simbolo %>
+                  <%= data.creditNote.moneda.simbolo %>
                     <%= formatDecimal(data.subTotal) %>
                 </p>
               </td>
@@ -177,7 +173,7 @@
               </td>
               <td class="text-right">
                 <p>
-                  <%= data.sale.moneda.simbolo %>
+                  <%= data.creditNote.moneda.simbolo %>
                     <%= formatDecimal(item.monto) %>
                 </p>
               </td>
@@ -190,7 +186,7 @@
                 </th>
                 <th class="text-right">
                   <p>
-                    <%= data.sale.moneda.simbolo %>
+                    <%= data.creditNote.moneda.simbolo %>
                       <%= formatDecimal(data.total) %>
                   </p>
                 </th>
@@ -200,79 +196,29 @@
       </div>
     </div>
 
-    <% if (data.sale.nota) { %>
-      <div class="pt-10 pb-10">
-        <h3 class="mb-5">NOTA:</h3>
-        <p>* <%= data.sale.nota %>
-        </p>
-      </div>
-      <% } %>
+    <div class="flex flex-row justify-content-start align-items-center">
+      <% if (data.creditNote.comprobante.facturado) { %>
+        <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
+        <% } %>
 
-        <% if (data.banks.length > 0) { %>
-          <div class="pt-10 pb-10">
-            <h3 class="mb-5">Cuentas Bancarias</h3>
-            <table class="table w-full">
-              <thead>
-                <tr>
-                  <th class="text-left">
-                    <p>BANCO</p>
-                  </th>
-                  <th class="text-left">
-                    <p>CUENTA</p>
-                  </th>
-                  <th class="text-left">
-                    <p>CCI</p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for (const item of data.banks) { %>
-                  <tr>
-                    <td>
-                      <p>
-                        <%= item.nombre %>
-                      </p>
-                    </td>
-                    <td>
-                      <p>
-                        <%= item.numCuenta %>
-                      </p>
-                    </td>
-                    <td>
-                      <p>
-                        <%= item.cci %>
-                      </p>
-                    </td>
-                  </tr>
+          <div class="flex flex-column gap-4">
+            <% if (data.creditNote.comprobante.facturado) { %>
+              <p class="font-weight-bold">
+                Representación Impresa del comprobante Electrónico.
+              </p>
+              <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
+                www.consultas-sunat.com
+              </a>
+              <% } %>
+                <% if (data.company.tipoEnvio===0) { %>
+                  <p class="text-danger font-weight-bold">
+                    Documento no valido
+                  </p>
                   <% } %>
-              </tbody>
-            </table>
+                   <p>Vendedor: <%= data.creditNote.usuario.persona.informacion %>
+                    </p>
           </div>
-          <% } %>
-
-            <div class="flex flex-row justify-content-start align-items-center">
-              <% if (data.sale.comprobante.facturado) { %>
-                <img src="data:image/png;base64,<%= data.base64QR %>" alt="QR Code" width="100" />
-                <% } %>
-
-                  <div class="flex flex-column gap-4">
-                    <% if (data.sale.comprobante.facturado) { %>
-                      <p class="font-weight-bold">
-                        Representación Impresa del comprobante Electrónico.
-                      </p>
-                      <a href="https://ww1.sunat.gob.pe/ol-ti-itconsultaunificadalibre/consultaUnificadaLibre/consulta">
-                        www.consultas-sunat.com
-                      </a>
-                      <% } %>
-                        <% if (data.company.tipoEnvio===0) { %>
-                          <p class="text-danger font-weight-bold">
-                            Documento no valido
-                          </p>
-                          <% } %>
-                            <p>Vendedor: <%= data.sale.usuario.persona.informacion %>
-                            </p>
-                  </div>
-            </div>
+    </div>
   </main>
 </body>
 

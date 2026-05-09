@@ -15,6 +15,7 @@ import { ProductModule } from './modules/product/product.module';
 import { PersonModule } from './modules/person/person.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { PdfBrowserProvider } from './handlers/pdf-browser.provider';
+import { CreditNoteModule } from './modules/credit-note/credit-note.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PdfBrowserProvider } from './handlers/pdf-browser.provider';
     OrderModule,
     ProductModule,
     PersonModule,
+    CreditNoteModule,
   ],
   controllers: [AppController],
   providers: [AppService, PdfBrowserProvider],

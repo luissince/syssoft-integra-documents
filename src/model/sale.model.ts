@@ -1,5 +1,6 @@
 import Currency from './currency.model';
 import PaymentMethod from './payment-method.model';
+import PaymentTerms from './payment-terms.model';
 import Person from './person.model';
 import Receipt from './receipt.model';
 import SaleDetail from './sale-detail.model';
@@ -16,8 +17,8 @@ class Sale {
   private _numeracion: number;
   private _comentario: string;
   private _idFormaPago: string;
-  private _numeroCuota: number;
-  private _frecuenciaPago: string;
+  private _idPlazo: string;
+  private _fechaVencimiento: string;
   private _estado: boolean;
   private _fecha: string;
   private _hora: string;
@@ -33,6 +34,7 @@ class Sale {
   private _comprobante: Receipt;
   private _moneda: Currency;
   private _formaPago: PaymentMethod;
+  private _plazo: PaymentTerms;
   private _usuario: User;
   private _ventaDetalles: SaleDetail[];
 
@@ -116,20 +118,20 @@ class Sale {
     this._idFormaPago = _idFormaPago;
   }
 
-  get numeroCuota(): number {
-    return this._numeroCuota;
+  get idPlazo(): string {
+    return this._idPlazo;
   }
 
-  set numeroCuota(_numeroCuota: number) {
-    this._numeroCuota = _numeroCuota;
+  set idPlazo(_idPlazo: string) {
+    this._idPlazo = _idPlazo;
   }
 
-  get frecuenciaPago(): string {
-    return this._frecuenciaPago;
+  get fechaVencimiento(): string {
+    return this._fechaVencimiento;
   }
 
-  set frecuenciaPago(_frecuenciaPago: string) {
-    this._frecuenciaPago = _frecuenciaPago;
+  set fechaVencimiento(_fechaVencimiento: string) {
+    this._fechaVencimiento = _fechaVencimiento;
   }
 
   get estado(): boolean {
@@ -250,6 +252,14 @@ class Sale {
 
   set formaPago(_formaPago: PaymentMethod) {
     this._formaPago = _formaPago;
+  }
+
+  get plazo(): PaymentTerms {
+    return this._plazo;
+  }
+
+  set plazo(_plazo: PaymentTerms) {
+    this._plazo = _plazo;
   }
 
   get usuario(): User {
