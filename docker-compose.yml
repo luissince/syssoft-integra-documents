@@ -1,7 +1,16 @@
 services:
-  documents-services:
+  documents-api:
     image: ${IMAGE_NAME}
     container_name: ${CONTAINER_NAME}
+    command: node dist/main.js
+    restart: always
+    networks:
+      - luis
+
+  documents-worker:
+    image: ${IMAGE_NAME}
+    container_name: "${CONTAINER_NAME}-worker"
+    command: node dist/main.worker.js
     restart: always
     networks:
       - luis
