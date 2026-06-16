@@ -171,6 +171,12 @@ docker-compose -f docker-compose.dev.yml down
 
 ## 📖 Uso de la API
 
+### Link de swagger
+
+````
+http://localhost:8000/docs
+````
+
 ### Generar PDF desde Template
 
 ```bash

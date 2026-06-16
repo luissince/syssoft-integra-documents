@@ -5,6 +5,8 @@ import * as ejs from 'ejs';
 import { millimetersToPixels, pixelsToMillimeters, startTimer } from './utils.helper';
 import { withNewPage } from 'src/handlers/pdf.playwright.handler';
 import { Page } from 'playwright';
+import { PAPER_CONFIG, PaperType } from 'src/common/dto/paper.dto';
+import PdfOptions from 'src/common/dto/pdf-options.dto';
 
 // Cache para templates
 const templateCache = new Map<string, string>();
@@ -21,14 +23,17 @@ async function loadTemplate(filePath: string): Promise<string> {
 async function measureHeight(
   htmlContent: string,
   width: number,
+  timeout: number = 30000,
 ): Promise<number> {
   return await withNewPage(async (page) => {
     await page.setViewportSize({ width, height: 10 });
     await page.setContent(htmlContent, {
       waitUntil: 'networkidle',
-      timeout: 30000,
+      timeout: timeout,
     });
-    await page.waitForFunction(() => document.fonts.ready, { timeout: 30000 });
+    await page.waitForFunction(() => document.fonts.ready, {
+      timeout: timeout
+    });
 
     const body = await page.$('body');
     const boundingBox = await body?.boundingBox();
@@ -140,3 +145,68 @@ export const generatePDF = async (
     }
   });
 };
+
+/**
+ * Generates a PDF from a HTML
+ * @param htmlContent The HTML to convert to PDF
+ * @param options PDF generation options
+ * @returns Promise with PDF buffer
+ */
+export const generatePDFFromHTML = async ({
+  htmlContent,
+  paper,
+  timeout,
+  margin,
+  outputType,
+}: PdfOptions): Promise<Buffer> => {
+  return await withNewPage(async (page: Page) => {
+    const pdfOptions: any = {
+      printBackground: true,
+      margin: margin,
+    };
+
+    await page.setContent(htmlContent, {
+      waitUntil: 'networkidle',
+      timeout: timeout,
+    });
+
+    await page.waitForFunction(() => document.fonts.ready, {
+      timeout: timeout,
+    });
+
+    if (paper.paperType === PaperType.A4) {
+      // pdfOptions.displayHeaderFooter = true;
+      // pdfOptions.headerTemplate = templateHeader;
+      // pdfOptions.footerTemplate = isFooter ? templateFooter : '';
+      pdfOptions.format = PAPER_CONFIG[paper.paperType].format;
+      pdfOptions.width = `${PAPER_CONFIG[paper.paperType].width}mm`;
+      pdfOptions.height = `${PAPER_CONFIG[paper.paperType].height}mm`;
+    } if (paper.paperType === PaperType.CUSTOM) {
+      pdfOptions.width = `${paper.width}mm`;
+      pdfOptions.height = `${paper.height}mm`;
+    } else {
+      const widthMm = PAPER_CONFIG[paper.paperType].width;
+
+      const widthPx = Math.round(millimetersToPixels(widthMm));
+      const heightPx = await measureHeight(htmlContent, widthPx, timeout);
+      const heightMm = pixelsToMillimeters(heightPx).toFixed(2);
+
+      pdfOptions.width = `${widthMm}mm`;
+      pdfOptions.height = `${heightMm}mm`;
+    }
+
+    if (outputType === 'pdf') {
+      return await page.pdf(pdfOptions);
+    }
+
+    const buffer = await page.screenshot({
+      type: outputType,
+      fullPage: true,
+      scale: 'device',
+      quality: 100,
+      omitBackground: false,
+    });
+
+    return buffer;
+  });
+}

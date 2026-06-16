@@ -7,8 +7,9 @@ let browser: Browser | null = null;
  * Obtiene o crea un navegador único (singleton)
  */
 export async function getBrowser(): Promise<Browser> {
-  if (!browser) {
+  if (!browser || !browser.isConnected()) {
     console.log('🔧 Iniciando navegador Chromium...');
+
     browser = await chromium.launch({
       headless: true,
       args: [
@@ -19,7 +20,13 @@ export async function getBrowser(): Promise<Browser> {
         // '--single-process',
       ],
     });
+
     console.log('✅ Navegador iniciado');
+
+    browser.on('disconnected', () => {
+      console.warn('⚠️ Browser desconectado');
+      browser = null;
+    });
   }
   return browser;
 }
@@ -28,14 +35,20 @@ export async function getBrowser(): Promise<Browser> {
  * Crea un nuevo contexto de navegador (aislado) para cada uso
  */
 export async function newContext(): Promise<BrowserContext> {
-  const browser = await getBrowser();
-  const context = await browser.newContext({
-    viewport: { width: 1200, height: 800 },
-    deviceScaleFactor: 3,
-    isMobile: false,
-    ignoreHTTPSErrors: true,
-  });
-  return context;
+  try {
+    const browser = await getBrowser();
+
+    return await browser.newContext({
+      viewport: { width: 1200, height: 800 },
+      deviceScaleFactor: 3,
+      isMobile: false,
+      ignoreHTTPSErrors: true,
+    });
+  } catch (err) {
+    console.warn('⚠️ Browser inválido. Recreando...');
+    
+    throw err;
+  }
 }
 
 /**
