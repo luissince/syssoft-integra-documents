@@ -23,7 +23,7 @@ import {
 @ApiTags('Sale')
 @Controller('sale')
 export class SaleController {
-  constructor(private readonly saleService: SaleService) {}
+  constructor(private readonly saleService: SaleService) { }
 
   @Post('pdf/invoices')
   async pdfInvoices(@Res() res: Response, @Body() body: InvoicesSaleDto) {
@@ -48,11 +48,11 @@ export class SaleController {
         data,
         formatDecimal,
       },
-      false,
-      body.outputType
-    );
+        false,
+        body.outputType
+      );
 
-      sendPdfResponse(res, buffer, data.title, body.outputType);
+      sendPdfResponse({ res, buffer, fileName: data.title, type: body.outputType });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -89,7 +89,7 @@ export class SaleController {
         this.saleService.pdfAccountReceivable(),
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -111,7 +111,7 @@ export class SaleController {
         data,
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -153,7 +153,7 @@ export class SaleController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

@@ -23,7 +23,7 @@ import {
 @ApiTags('PurchaseOrder')
 @Controller('purchase-order')
 export class PurchaseOrderController {
-  constructor(private readonly purchaseOrderService: PurchaseOrderService) {}
+  constructor(private readonly purchaseOrderService: PurchaseOrderService) { }
 
   @Post('pdf/invoices')
   async pdfInvoices(
@@ -52,7 +52,7 @@ export class PurchaseOrderController {
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -77,7 +77,7 @@ export class PurchaseOrderController {
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -99,7 +99,7 @@ export class PurchaseOrderController {
         data,
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -139,7 +139,7 @@ export class PurchaseOrderController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

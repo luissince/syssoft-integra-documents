@@ -20,7 +20,7 @@ import {
 @ApiTags('Person')
 @Controller('person')
 export class PersonController {
-  constructor(private readonly personService: PersonService) {}
+  constructor(private readonly personService: PersonService) { }
 
   @Post('pdf/customer/reports')
   async pdfCustomerReport(@Req() req: Request, @Res() res: Response) {
@@ -35,7 +35,7 @@ export class PersonController {
         data,
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -57,7 +57,7 @@ export class PersonController {
         data,
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -97,7 +97,7 @@ export class PersonController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -137,7 +137,7 @@ export class PersonController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

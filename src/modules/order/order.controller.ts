@@ -49,9 +49,8 @@ export class OrderController {
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         error.message || 'Error al generar el PDF',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -73,7 +72,7 @@ export class OrderController {
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -95,7 +94,7 @@ export class OrderController {
         data,
       );
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -135,7 +134,7 @@ export class OrderController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

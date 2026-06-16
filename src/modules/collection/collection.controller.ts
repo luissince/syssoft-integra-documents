@@ -49,7 +49,7 @@ export class CollectionController {
         formatDecimal,
       });
 
-      sendPdfResponse(res, buffer, data.title);
+      sendPdfResponse({ res, buffer, fileName: data.title });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -70,7 +70,7 @@ export class CollectionController {
         this.collectionService.pdfReport(),
       );
 
-      sendPdfResponse(res, buffer, fileName);
+      sendPdfResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',
@@ -110,7 +110,7 @@ export class CollectionController {
       const buffer: ArrayBuffer = await workbook.xlsx.writeBuffer();
 
       // Enviar el archivo
-      sendExcelResponse(res, buffer, fileName);
+      sendExcelResponse({ res, buffer, fileName });
     } catch (error) {
       throw new HttpException(
         error.message || 'Error al generar el PDF',

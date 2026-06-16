@@ -1,3 +1,4 @@
+import * as sharp from 'sharp';
 /**
  * Función encarga de esperar un tiempo determinado antes de devolver un Promise.
  *
@@ -75,62 +76,6 @@ export function formatNumberWithZeros(numero: number): string {
 }
 
 /**
- * Formatea una cadena de fecha en el formato "DD/MM/AAAA".
- *
- * @param date - La cadena de fecha en el formato "DD/MM/AAAA".
- * @returns {string} La cadena de fecha formateada.
- */
-export function formatDate(date: string): string {
-  const parts = date.split('-');
-  const today = new Date(
-    Number(parts[0]),
-    Number(parts[1]) - 1,
-    Number(parts[2]),
-  );
-
-  const day = today.getDate() > 9 ? today.getDate() : '0' + today.getDate();
-  const month =
-    today.getMonth() + 1 > 9
-      ? today.getMonth() + 1
-      : '0' + (today.getMonth() + 1);
-  const year = today.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
-/**
- * Formatea una cadena de tiempo en formato "HH:mm AM/PM" o "HH:mm:ss AM/PM".
- *
- * @param {string} time - La cadena de tiempo en formato "HH:mm" o "HH:mm:ss".
- * @param {boolean} [addSeconds=false] - Indica si se deben incluir los segundos en la salida.
- * @returns {string} La cadena de tiempo formateada.
- */
-export function formatTime(time: string, addSeconds: boolean = false): string {
-  const timeRegex =
-    /^(0\d|1\d|2[0-4]):((0[0-9])|([1-5][0-9])|59)(?::([0-5][0-9]))?$/;
-  const match = time.match(timeRegex);
-
-  if (!match) {
-    return 'Invalid Time';
-  }
-
-  const parts = time.split(':');
-
-  const HH = Number(parts[0]);
-  const mm = parts[1];
-  const ss = parts[2] === undefined ? '00' : parts[2];
-
-  const thf = HH % 12 || 12;
-  const ampm = HH < 12 || HH === 24 ? 'AM' : 'PM';
-  const formattedHour = thf < 10 ? '0' + thf : thf;
-
-  if (addSeconds) {
-    return `${formattedHour}:${mm}:${ss} ${ampm}`;
-  }
-
-  return `${formattedHour}:${mm} ${ampm}`;
-}
-
-/**
  * Función encarga de calcular el bruto de un impuesto.
  *
  * @param tax - Valor del impuesto.
@@ -154,23 +99,86 @@ export function calculateTax(porcent: number, amount: number): number {
 }
 
 /**
- * Obtiene la fecha actual en el formato 'YYYY-MM-DD'.
- * @returns {string} Fecha actual en formato 'YYYY-MM-DD'.
+ * Obtiene la fecha actual en formato "YYYY-MM-DD".
+ * @returns {string} La fecha actual en formato "YYYY-MM-DD".
  */
 export function currentDate(): string {
   const date = new Date();
-  return parseFormatDate(date);
+  // Formatea la fecha como "YYYY-MM-DD"
+  const formatted_date = date.getFullYear() + "-" + ((date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (
+    date.getMonth() + 1)) + "-" + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate());
+  return formatted_date; // Retorna la fecha formateada
 }
 
-function parseFormatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = padZeroes(date.getMonth() + 1);
-  const day = padZeroes(date.getDate());
-  return `${year}-${month}-${day}`;
+/**
+ * Obtiene la hora actual en formato "HH:MM:SS".
+ * @returns {string} La hora actual en formato "HH:MM:SS".
+ */
+export function currentTime(): string {
+  const time = new Date();
+  // Formatea la hora como "HH:MM:SS"
+  const formatted_time = (time.getHours() > 9 ? time.getHours() : '0' + time.getHours()) + ":" + (time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()) + ":" + (time.getSeconds() > 9 ? time.getSeconds() : '0' + time.getSeconds());
+  return formatted_time; // Retorna la hora formateada
 }
 
-function padZeroes(num: number): string | number {
-  return num > 9 ? num : '0' + num;
+/**
+ * Formatea una cadena de fecha en un formato de "dd/MM/yyyy"
+ *
+ * @param {string} date
+ * @returns {string} La cadena de fecha formateada.
+ */
+export function formatDate(date: string): string {
+  const parts = date.split('-');
+
+  if (parts.length !== 3) {
+    return 'Invalid Date';
+  }
+
+  const today = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  const day = today.getDate() > 9 ? today.getDate() : '0' + today.getDate();
+  const month =
+    today.getMonth() + 1 > 9
+      ? today.getMonth() + 1
+      : '0' + (today.getMonth() + 1);
+  const year = today.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+/**
+ * Formatea una cadena de tiempo en un formato de 12 horas (por defecto) o de 24 horas.
+ *
+ * @param {string} time - La cadena de tiempo en formato "HH:mm" o "HH:mm:ss".
+ * @param {boolean} [addSeconds=false] - Indica si se deben incluir los segundos en la salida.
+ * @returns {string} La cadena de tiempo formateada.
+ */
+export function formatTime(time: string, addSeconds: boolean = false): string {
+  try {
+    const timeRegex =
+      /^(0\d|1\d|2[0-4]):((0[0-9])|([1-5][0-9])|59)(?::([0-5][0-9]))?$/;
+    const match = time.match(timeRegex);
+
+    if (!match) {
+      throw new Error("Invalid Time");
+    }
+
+    const parts = time.split(':');
+
+    const HH = Number(parts[0]);
+    const mm = parts[1];
+    const ss = parts[2] === undefined ? '00' : parts[2];
+
+    const thf = HH % 12 || 12;
+    const ampm = HH < 12 || HH === 24 ? 'AM' : 'PM';
+    const formattedHour = thf < 10 ? '0' + thf : thf;
+
+    if (addSeconds) {
+      return `${formattedHour}:${mm}:${ss} ${ampm}`;
+    }
+
+    return `${formattedHour}:${mm} ${ampm}`;
+  } catch (e) {
+    return e.message ?? "Invalid Time";
+  }
 }
 
 /**
@@ -201,7 +209,50 @@ export const startTimer = (label: string) => {
   return () => {
     const end = process.hrtime.bigint();
     const ms = Number(end - start) / 1_000_000;
-    console.log(`[TIMER] ${label}: ${ms.toFixed(2)} ms`);
     return ms;
   };
 };
+
+export async function convertImageToEscPos(image: Buffer, widthPx: number) {
+
+  const processed = await sharp(image)
+    .resize(widthPx, null, {
+      fit: "contain",
+      kernel: sharp.kernel.nearest, // 👈 evita blur (CRÍTICO)
+    })
+    .grayscale()
+    .threshold(140) // 👈 binarización simple (MEJOR que Floyd)
+    .raw()
+    .toBuffer();
+
+  const widthBytes = widthPx / 8;
+  const height = Math.floor(processed.length / widthPx);
+
+  const header = Buffer.from([
+    0x1D, 0x76, 0x30, 0x00,
+    widthBytes & 0xff,
+    (widthBytes >> 8) & 0xff,
+    height & 0xff,
+    (height >> 8) & 0xff,
+  ]);
+
+  const output = [header];
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < widthPx; x += 8) {
+
+      let byte = 0;
+
+      for (let b = 0; b < 8; b++) {
+        const idx = (y * widthPx) + (x + b);
+        if (processed[idx] === 0) {
+          byte |= (1 << (7 - b));
+        }
+      }
+
+      output.push(Buffer.from([byte]));
+    }
+  }
+
+  return Buffer.concat(output);
+}

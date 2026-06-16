@@ -1,4 +1,4 @@
-import Ubigeo from './ubigeo.model';
+import Ubigeo from "./ubigeo.model";
 
 class Catalog {
   private _idCatalogo: string;
