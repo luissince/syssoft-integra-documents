@@ -1,7 +1,7 @@
 services:
-  documents-services-production:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/syssoftintegra/documents:latest
-    container_name: sysintegra-documents
+  documents-services:
+    image: ${IMAGE_NAME}
+    container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - luis

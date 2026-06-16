@@ -6,16 +6,19 @@ on:
       - master
 
 jobs:
-  build-nestjs:
-    name: Construir y subir imagen a ECR
+  build-and-push:
+    name: Build and Push Docker Image to ECR
     runs-on: ubuntu-latest
     environment: production
 
+    env:
+      ECR_IMAGE_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
+    
     steps:
-      - name: Checkout código
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Crear archivo .env
+      - name: Create .env file
         run: |
           cat > .env <<EOL
           NODE_ENV="${{secrets.NODE_ENV}}"
@@ -26,9 +29,10 @@ jobs:
           AWS_ACCESS_KEY_ID_S3="${{secrets.AWS_ACCESS_KEY_ID_S3}}"
           AWS_SECRET_ACCESS_KEY_S3="${{secrets.AWS_SECRET_ACCESS_KEY_S3}}"
           PDF_BUCKET="${{secrets.PDF_BUCKET}}"
+          RABBITMQ_HOSTS="${{secrets.RABBITMQ_HOSTS}}"
           EOL
 
-      - name: Construyendo contenedor NestJs
+      - name: Build Docker image
         run: docker compose -f docker-compose.build.yml build
 
       - name: Configure AWS credentials
@@ -38,26 +42,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Iniciar sesión en Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1 
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Agregar etiqueta latest a la imagen
-        run: docker tag documents ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
+      - name: Tag service image
+        run: docker tag documents $ECR_IMAGE_URI
 
-      - name: Subir imagen a ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
-
-  deploy-nestjs:
-    name: Deployar en producción
+      - name: Push service image to Amazon ECR
+        run: docker push $ECR_IMAGE_URI
+      
+  deploy-to-runs-on:
+    name: Deploy to Production Server
     runs-on: self-hosted
-    needs: build-nestjs
+    needs: build-and-push
 
     env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      CONTAINER_NAME: sysintegra-documents
+      IMAGE_NAME: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
 
     steps:
-      - name: Checkout código
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
@@ -67,46 +71,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Iniciar sesión en Amazon ECR
+      - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Descargar imagen desde ECR
-        run: docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/syssoftintegra/documents:latest
+      - name: Download image from Amazon ECR
+        run: docker pull $IMAGE_NAME
 
-      - name: Crear y ejecutar contenedor en producción
+      - name: Create and run container
         run: docker compose -f docker-compose.yml up -d
       
-      - name: Eliminar imágenes locales
+      - name: Clean up local Docker images
         run: docker image prune -af || true
-
+      
   clean-ecr-images:
-    name: Borrar imágenes antiguas de ECR
+    name: Clear up old images in ECR
     runs-on: ubuntu-latest
-    needs: deploy-nestjs
+    needs: deploy-to-runs-on
+
     steps:
-      - name: Configurar credenciales AWS
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Instalar jq
+      - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Borrar imágenes sin tag 'latest'
+      - name: Delete old images from ECR
         run: |
           REPO="syssoftintegra/documents"
+          TAG="latest"
 
-            # 1. Obtener todas las imágenes (excepto latest)
-            aws ecr list-images --repository-name $REPO \
-              --query 'imageIds[?type(imageTag)==`null` || imageTag!=`latest`]' \
-              --output json > images.json
+          aws ecr list-images \
+          --repository-name "$REPO" \
+          --query "imageIds[?type(imageTag)==null || imageTag!='${TAG}']" \
+          --output json > images.json
 
-            # 2. Verificar si hay imágenes para borrar
-            if [ $(jq -e 'length > 0' images.json) = "true" ]; then
-              echo "Borrando $(jq length images.json) imágenes antiguas..."
-              aws ecr batch-delete-image --repository-name $REPO --image-ids file://images.json
-            else
-              echo "No hay imágenes antiguas para borrar en $REPO"
-            fi
+          COUNT=$(jq length images.json)
+
+          if [ "$COUNT" -gt 0 ]; then
+            echo "🗑️ Cleaning up $COUNT old images from $REPO..."
+            
+            aws ecr batch-delete-image \
+              --repository-name "$REPO" \
+              --image-ids file://images.json
+          else
+            echo "✅ There are no old images to delete from $REPO."
+          fi
