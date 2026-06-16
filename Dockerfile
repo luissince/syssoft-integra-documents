@@ -67,4 +67,4 @@ COPY --from=build /app/.env ./.env
 EXPOSE 80
 
 # Comando para ejecutar la aplicación en modo producción
-CMD ["node", "dist/main"]
+# CMD ["node", "dist/main"]

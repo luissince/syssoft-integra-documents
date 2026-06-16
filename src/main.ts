@@ -1,3 +1,4 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import configureCors from './config/cors.config';
@@ -5,8 +6,6 @@ import staticConfig from './config/static.config';
 import swaggerConfig from './config/swagger.config';
 import * as bodyParser from 'body-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { Transport } from '@nestjs/microservices';
-import { CATALOG_PDF_GENERATED_QUEUE } from './constants/queues';
 
 async function configureHttpServer(
   app: NestExpressApplication,
@@ -32,24 +31,6 @@ async function configureHttpServer(
   swaggerConfig(app);
 }
 
-async function configureRabbitMq(
-  app: NestExpressApplication,
-): Promise<void> {
-  // Configurar RabbitMQ
-  app.connectMicroservice({
-    transport: Transport.RMQ,
-    options: {
-      urls: [process.env.RABBITMQ_HOSTS],
-      queue: CATALOG_PDF_GENERATED_QUEUE,
-      queueOptions: {
-        durable: true,
-      },
-    },
-  });
-
-  // Iniciar los microservicios
-  await app.startAllMicroservices();
-}
 
 async function bootstrap() {
   // Crear la aplicación NestJS
@@ -60,9 +41,6 @@ async function bootstrap() {
 
   // Configurar el servidor HTTP
   await configureHttpServer(app);
-
-  // Configurar RabbitMQ
-  await configureRabbitMq(app);
 
   // Iniciar el servidor HTTP
   await app.listen(process.env.PORT);
