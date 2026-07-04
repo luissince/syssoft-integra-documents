@@ -33,6 +33,7 @@ export class PdfWorkerService {
 
       this.rabbitClient.emit(CATALOG_PDF_COMPLETED_PATTERN, {
         idCatalogo: pdfOptions.data.idCatalogo,
+        tenant: pdfOptions.data.tenant,
         status: 'LISTO',
         key
       });
