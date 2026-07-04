@@ -126,7 +126,7 @@ nvm use
 npm install
 
 # Instalar Playwright con Chromium
-npx playwright@1.47.2 install --with-deps chromium
+npx playwright@1.51.0 install --with-deps chromium
 ```
 
 ### 3. Configurar Variables de Entorno

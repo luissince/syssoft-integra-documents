@@ -4,6 +4,8 @@ services:
     container_name: ${CONTAINER_NAME}
     command: node dist/main.js
     restart: always
+    ports:
+      - "3000:80"
     networks:
       - luis
 
