@@ -11,32 +11,21 @@ export class AppService {
   }
 
   async htmlToPdf(body: PdfOptions): Promise<Uint8Array> {
-    try {
-      return await generatePDFFromHTML(body);
-    } catch (error) {
-      throw error;
-    }
+    return await generatePDFFromHTML(body);
   }
 
   async htmlToEscPos(body: PdfOptions): Promise<Uint8Array> {
-    try {
-      const widthMm = PAPER_CONFIG[body.paper.paperType].width
+    const widthMm = PAPER_CONFIG[body.paper.paperType].width
       ?? body.paper.width;
-      const widthPx = Math.round(millimetersToPixels(widthMm));
+    const widthPx = Math.round(millimetersToPixels(widthMm));
 
-      const buffer: Buffer = await generatePDFFromHTML(body);
-      const escPosBuffer: Uint8Array = await convertImageToEscPos(buffer, widthPx);
-      return escPosBuffer;
-    } catch (error) {
-      throw error;
-    }
+    const buffer: Buffer = await generatePDFFromHTML(body);
+    const escPosBuffer: Uint8Array = await convertImageToEscPos(buffer, widthPx);
+    return escPosBuffer;
   }
 
   async pdfTest(): Promise<Uint8Array> {
-    try {
-
-      const template = `
-      
+    const template = `
         <!DOCTYPE html>
         <html lang="es">
         <head>
@@ -263,25 +252,20 @@ export class AppService {
             <li>Laravel</li>
             </ul>
         </body>
-        </html>
-        
-      `;
+        </html>`;
 
-      const params: PdfOptions = {
-        ...PdfOptions,
-        htmlContent: template,
-        paper: {
-          paperType: PaperType.A4
-        },
-        outputType: 'pdf'
-      };
+    const params: PdfOptions = {
+      ...PdfOptions,
+      htmlContent: template,
+      paper: {
+        paperType: PaperType.A4
+      },
+      outputType: 'pdf'
+    };
 
-      const buffer: Uint8Array = await generatePDFFromHTML(params);
+    const buffer: Uint8Array = await generatePDFFromHTML(params);
 
-      return buffer;
-    } catch (error) {
-      throw error;
-    }
+    return buffer;
   }
 
 }
