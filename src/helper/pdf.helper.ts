@@ -52,8 +52,6 @@ export const generatePDF = async (
   outputType: 'pdf' | 'jpeg' | 'png' | 'jpg' = 'pdf',
 ): Promise<Buffer> => {
   return await withNewPage(async (page: Page) => {
-    const stopAll = startTimer('TOTAL generatePDF');
-
     const viewsPath = path.join(__dirname, '..', '..', 'views');
     const stopLoadTemplates = startTimer('Load templates');
     const [templateHeader, templateContent, templateFooter] = await Promise.all([
